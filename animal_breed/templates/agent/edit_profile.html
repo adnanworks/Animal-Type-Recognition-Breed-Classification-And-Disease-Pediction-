@@ -1,0 +1,100 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <h2 class="text-center" id="ab">Edit Profile</h2>
+    <hr>
+
+    <form method="POST"
+          action="/myapp/agent_edit_profile_post/"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th>Full Name</th>
+                <td>
+                    <input type="text"
+                           name="name"
+                           value="{{ i.name }}"
+                           class="form-control"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Email</th>
+                <td>
+                    <input type="email"
+                           name="email"
+                           value="{{ i.email }}"
+                           class="form-control"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Place</th>
+                <td>
+                    <input type="text"
+                           name="place"
+                           value="{{ i.place }}"
+                           class="form-control"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td>
+                    <input type="text"
+                           name="phone"
+                           value="{{ i.phone }}"
+                           class="form-control"
+                           pattern="^[6-9][0-9]{9}$"
+                           title="Phone must start with 6/7/8/9 and be exactly 10 digits"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Photo</th>
+                <td>
+                    <input type="file"
+                           name="photo"
+                           class="form-control"
+                           accept="image/*">
+                </td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                    <input type="hidden" name="id" value="{{ i.id }}">
+                    <button type="submit" class="btn btn-primary">
+                        Update Profile
+                    </button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+</div>
+
+</body>
+</html>
+
+{% endblock %}

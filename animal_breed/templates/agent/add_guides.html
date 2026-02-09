@@ -1,0 +1,40 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Guide</title>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Add Guide</h2>
+
+    <form method="post" action="/myapp/add_guide_post/" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        <label>Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <label>Place</label>
+        <input type="text" name="place" required>
+
+        <label>Photo</label>
+        <input type="file" name="photo" required>
+
+        <button type="submit">Add Guide</button>
+    </form>
+</div>
+
+</body>
+</html>
+{% endblock %}

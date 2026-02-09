@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for i in messages %}
+    <div class="alert alert-info text-center mt-3">{{ i }}</div>
+{% endfor %}
+
+<!-- FORM -->
+<div class="form-container">
+    <h3 class="form-title">AGENT REGISTRATION</h3>
+
+    <form action="/myapp/agent_register_post/"
+          method="post"
+          enctype="multipart/form-data"
+          name="regForm"
+          onsubmit="return validatePasswords()">
+
+        {% csrf_token %}
+
+        <label>Name</label>
+        <input type="text" class="form-control" name="name" required><br>
+
+        <label>Email</label>
+        <input type="email" class="form-control" name="email" required><br>
+
+        <label>Place</label>
+        <input type="text" class="form-control" name="place" required><br>
+
+        <label>Phone</label>
+        <input type="text"
+               class="form-control"
+               name="phone"
+               pattern="^[6-9][0-9]{9}$"
+               title="Phone must start with 6/7/8/9 and be exactly 10 digits"
+               required><br>
+
+        <label>Upload Photo</label>
+        <input type="file"
+               class="form-control"
+               name="photo"
+               accept="image/*"
+               required><br>
+
+        <label>Password</label>
+        <input type="password"
+               class="form-control"
+               name="pwd"
+               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"
+               title="Min 8 chars, 1 capital letter, 1 special character."
+               required><br>
+
+        <label>Confirm Password</label>
+        <input type="password"
+               class="form-control"
+               name="cpwd"
+               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"
+               title="Min 8 chars, 1 capital letter, 1 special character."
+               required><br>
+
+        <button type="submit" class="btn btn-primary">
+            Register
+        </button>
+
+    </form>
+</div>
+
+<!-- VALIDATION SCRIPT -->
+<script>
+function validatePasswords() {
+    let pwd = document.forms["regForm"]["pwd"].value;
+    let cpwd = document.forms["regForm"]["cpwd"].value;
+
+    if (pwd !== cpwd) {
+        alert("Passwords do not match!");
+        return false;
+    }
+    return true;
+}
+</script>
+
+</body>
+</html>

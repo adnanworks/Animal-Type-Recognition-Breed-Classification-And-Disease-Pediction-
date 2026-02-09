@@ -1,0 +1,56 @@
+{% extends 'admin/home.html' %}
+{% block body %}
+<body>
+
+{% for i in messages %}
+    {{ i }}
+{% endfor %}
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Sl no</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Place</th>
+            <th>Phone</th>
+            <th>Photo</th>
+            <th>Status</th>
+            <th>Verify</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.email }}</td>
+            <td>{{ i.place }}</td>
+            <td>{{ i.phone }}</td>
+            <td>
+                <img src="{{ i.photo.url }}" height="40" width="40" alt="photo">
+            </td>
+            <td>{{ i.status }}</td>
+            <td>
+                 <form method="post" action="/myapp/admin_verify_agent_post/">
+                    {% csrf_token %}
+                    {% if i.status == 'Active' %}
+                        <button type="submit" name="block" value="{{ i.id }}" class="btn-action reject">Block</button>
+                    {% elif i.status == 'Blocked' %}
+                        <button type="submit" name="unblock" value="{{ i.id }}" class="btn-action accept">Unblock</button>
+                    {% endif %}
+                </form>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="8">No Agents Found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+{% endblock %}

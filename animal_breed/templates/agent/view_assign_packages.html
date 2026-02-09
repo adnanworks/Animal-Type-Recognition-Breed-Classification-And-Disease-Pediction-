@@ -1,0 +1,44 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Assigned Packages</title>
+</head>
+<body>
+{% for i in messages %}
+    <div class="alert alert-info">{{ i }}</div>
+{% endfor %}
+<h2>Assigned Packages</h2>
+
+<table>
+    <tr>
+        <th>Sl No</th>
+        <th>Guide Name</th>
+        <th>Phone</th>
+        <th>Package Name</th>
+        <th>Place</th>
+        <th>Status</th>
+        <th>Delete</th>
+    </tr>
+
+    {% for i in data %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ i.GUIDE.name }}</td>
+        <td>{{ i.GUIDE.phone }}</td>
+        <td>{{ i.PACKAGE.title }}</td>
+        <td>{{ i.PACKAGE.PLACE.place_name }}</td>
+        <td>{{ i.status }}</td>
+        <td><a href="/myapp/delete_assign_package/{{ i.id }}">Delete</a></td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No Assignments Found</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
+{% endblock %}

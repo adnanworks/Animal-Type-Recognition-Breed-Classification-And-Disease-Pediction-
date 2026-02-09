@@ -1,0 +1,133 @@
+{% extends 'admin/home.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Wildlife Place</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    #map {
+      height: 350px;
+      width: 100%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form-panel">
+    <h2 id="ab">Add Wildlife Place</h2>
+
+    <form method="POST" action="/myapp/add_wildlife_place_post/">
+      {% csrf_token %}
+
+      <!-- Place Name -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Place Name</label>
+        <div class="col-sm-8">
+          <input type="text" name="place_name" class="form-control" required>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Description</label>
+        <div class="col-sm-8">
+          <textarea name="description" class="form-control" rows="3" required></textarea>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Location</label>
+        <div class="col-sm-8">
+          <input type="text" name="location" class="form-control" required>
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Type</label>
+        <div class="col-sm-8">
+          <select name="type" class="form-control" required>
+            <option value="">-- Select Type --</option>
+            <option value="Popular">Popular</option>
+            <option value="Non-Popular">Non-Popular</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Select Location on Map</label>
+        <div class="col-sm-8">
+          <div id="map"></div>
+        </div>
+      </div>
+
+      <!-- Latitude -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Latitude</label>
+        <div class="col-sm-8">
+          <input type="text" name="latitute" id="latitude" class="form-control" readonly required>
+        </div>
+      </div>
+
+      <!-- Longitude -->
+      <div class="row mb-3">
+        <label class="col-sm-4 col-form-label">Longitude</label>
+        <div class="col-sm-8">
+          <input type="text" name="longitude" id="longitude" class="form-control" readonly required>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="row mb-3">
+        <div class="offset-sm-4 col-sm-8">
+          <button type="submit" class="btn btn-primary">Add Wildlife Place</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Default map location (India)
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    // OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    var marker;
+
+    // On map click
+    map.on('click', function (e) {
+      var lat = e.latlng.lat.toFixed(6);
+      var lng = e.latlng.lng.toFixed(6);
+
+      // Set values to input fields
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+
+      // Add or move marker
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+    });
+  </script>
+</body>
+</html>
+{% endblock %}

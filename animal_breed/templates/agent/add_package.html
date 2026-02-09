@@ -1,0 +1,37 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Package</title>
+
+</head>
+<body>
+
+<div class="container">
+    <h2 id="ab">Add Package</h2>
+
+    <form method="post" action="/myapp/agent_add_package_post/">
+
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ i.id }}">
+
+        <label>Title</label>
+        <input type="text" name="title" required><br>
+
+        <label>Description</label>
+<input type="text" name="Description" required><br>
+        <label>Price</label>
+        <input type="number" name="price" required><br>
+
+        <label>Days</label>
+        <input type="number" name="days"  required><br>
+
+        <button type="submit">Add Package</button>
+    </form>
+</div>
+
+</body>
+</html>
+{% endblock %}

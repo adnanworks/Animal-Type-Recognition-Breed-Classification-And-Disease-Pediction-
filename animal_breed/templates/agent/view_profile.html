@@ -1,0 +1,64 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Profile</title>
+</head>
+
+<body>
+{% for i in messages %}
+    <div class="alert alert-info">{{ i }}</div>
+{% endfor %}
+<div class="container mt-5">
+
+    <h2 class="text-center" id="ab">Profile</h2>
+    <hr>
+
+    <div class="text-center mb-4">
+        {% if i.photo %}
+            <img src="{{ i.photo.url }}"
+                 alt="Profile Photo"
+                 style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+        {% else %}
+            <i class="fas fa-user" style="font-size:60px;"></i>
+        {% endif %}
+    </div>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Full Name</th>
+            <td>{{ i.name }}</td>
+        </tr>
+
+        <tr>
+            <th>Email Address</th>
+            <td>{{ i.email }}</td>
+        </tr>
+
+        <tr>
+            <th>Place</th>
+            <td>{{ i.place }}</td>
+        </tr>
+
+        <tr>
+            <th>Phone Number</th>
+            <td>{{ i.phone }}</td>
+        </tr>
+    </table>
+<div class="text-center mt-3">
+        <a href="/myapp/agent_edit_profile_get/{{ i.id }}"
+           class="btn btn-primary">
+            Edit Profile
+        </a>
+    </div>
+
+
+</div>
+
+</body>
+</html>
+
+{% endblock %}

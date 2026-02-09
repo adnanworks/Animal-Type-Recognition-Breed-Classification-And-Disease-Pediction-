@@ -1,0 +1,43 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Guide</title>
+</head>
+<body>
+
+<div class="container">
+    <h2>Edit Guide</h2>
+
+    <form method="post" action="/myapp/agent_edit_guide_post/" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="hidden" name="id" value="{{ data.id }}">
+
+        <label>Name</label>
+        <input type="text" name="name" value="{{ data.name }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ data.email }}" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ data.phone }}" required>
+
+        <label>Place</label>
+        <input type="text" name="place" value="{{ data.place }}" required>
+
+        <label>Current Photo</label>
+        <img src="{{ data.photo.url }}" alt="Guide Photo" width="50px;" height="50px;">
+
+        <label>Change Photo</label>
+        <input type="file" name="photo">
+
+        <button type="submit">Update Guide</button>
+    </form>
+</div>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'agent/home.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wildlife Places</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+        .map-box {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+{% for i in messages %}
+    <div class="alert alert-info">{{ i }}</div>
+{% endfor %}
+
+<h3 class="text-center mt-3" id="ab">Wildlife Places</h3>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Place Name</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Map</th>
+            <th>Add Package</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.place_name }}</td>
+            <td>{{ i.description }}</td>
+            <td>{{ i.location }}</td>
+            <td>{{ i.type }}</td>
+            <td>
+                <button class="btn btn-sm btn-primary"
+                        onclick="showMap({{ i.latitute }}, {{ i.longitude }})">
+                    View on Map
+                </button>
+            </td>
+        <td><a href="/myapp/agent_add_package_get/{{ i.id }}">Add Package</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center">No Places Found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Map Container -->
+<div class="map-box" id="mapBox">
+    <h5 class="text-center">Location on Map</h5>
+    <div id="map"></div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    var map, marker;
+
+    function showMap(lat, lng) {
+        document.getElementById('mapBox').style.display = 'block';
+
+        if (!map) {
+            map = L.map('map').setView([lat, lng], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            marker = L.marker([lat, lng]).addTo(map);
+        } else {
+            map.setView([lat, lng], 13);
+            marker.setLatLng([lat, lng]);
+        }
+    }
+</script>
+
+</body>
+</html>
+
+{% endblock %}

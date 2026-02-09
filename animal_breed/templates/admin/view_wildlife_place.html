@@ -1,0 +1,48 @@
+{% extends 'admin/home.html' %}
+{% block body %}
+<body>
+
+{% for i in messages %}
+    {{ i }}
+{% endfor %}
+
+<table border="1" id="ab">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Place Name</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.place_name }}</td>
+            <td>{{ i.description }}</td>
+            <td>{{ i.location }}</td>
+            <td>{{ i.type }}</td>
+            <td>{{ i.latitute }}</td>
+            <td>{{ i.longitude }}</td>
+            <td>
+                <a href="/myapp/edit_wildlife_place_get/{{ i.id }}">Edit</a>
+                <a href="">Delete</a>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="8">No Wildlife Places Found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+{% endblock %}
