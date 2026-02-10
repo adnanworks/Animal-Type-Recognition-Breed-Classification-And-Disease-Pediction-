@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
@@ -363,6 +365,7 @@ def add_guide_post(request):
             username=email,
             password=phone
         )
+        user.groups.add(Group.objects.get(name='guide'))
 
         guide = Guide()
         guide.LOGIN = user
@@ -410,6 +413,14 @@ def agent_edit_guide_post(request):
     messages.success(request, 'Guide details updated successfully')
     return redirect('/myapp/agent_view_guides/')
 
+def agent_delete_guide(request,id):
+    i = Guide.objects.get(id=id)
+    i.delete()
+    user = i.LOGIN
+    user.delete()
+    messages.success(request, 'Guide deleted')
+    return redirect('/myapp/agent_view_guides/')
+
 def assign_guide_to_package(request, id):
     g = Guide.objects.all()
     p = Package.objects.get(id=id)
@@ -424,10 +435,11 @@ def agent_assign_guide_post(request):
     a = Assign_package()
     a.GUIDE_id = g.id
     a.PACKAGE_id = p.id
+    a.date=date.today()
     a.save()
 
     messages.success(request, 'Guide assigned to package successfully')
-    return redirect('/myapp/agentview_assign_package/')
+    return redirect('/myapp/agentview_assign_package/#ab')
 
 def agentview_assign_package(request):
     a = Assign_package.objects.all()
@@ -437,7 +449,7 @@ def delete_assign_package(request,id):
     d=Assign_package.objects.get(id=id)
     d.delete()
     messages.success(request,'Deleted')
-    return redirect('/myapp/agentview_assign_package/')
+    return redirect('/myapp/agentview_assign_package/#ab')
 
 
 # ========================USER============================
@@ -461,7 +473,18 @@ def flutter_login(request):
                 print(s.id,'sid')
                 return JsonResponse({
                     'status': 'ok',
-                    'type': 'student',
+                    'type': 'guide',
+                    'lid': str(lid),
+                    'sid': str(s.id),
+                    'message': 'Login successful'
+                })
+            elif user.groups.filter(name="user").exists():
+                s= UserProfile.objects.get(LOGIN_id=lid)
+                print(lid,'lid')
+                print(s.id,'sid')
+                return JsonResponse({
+                    'status': 'ok',
+                    'type': 'user',
                     'lid': str(lid),
                     'sid': str(s.id),
                     'message': 'Login successful'
@@ -482,3 +505,176 @@ def flutter_login(request):
             'status': 'failed',
             'message': 'Only POST requests are allowed'
         })
+
+
+
+def guide_viewprofile(request):
+    lid = request.POST['lid']
+    print(lid,'login_id================')
+    profile = Guide.objects.get(LOGIN_id=lid)
+    print(profile,'-----------------')
+    return JsonResponse({'status': 'ok',
+                         'name': str(profile.name),
+                         'email': str(profile.email),
+                         'place': str(profile.place),
+                         'agent': str(profile.AGENT.name),
+                         'photo': str(profile.photo),
+                         'phone':str(profile.phone),})
+
+
+def guide_view_assipackages(request):
+    lid = request.POST['lid']
+    print(lid,'id----------------')
+    g=Guide.objects.get(LOGIN_id=lid)
+
+    n = Assign_package.objects.filter(GUIDE_id=g.id)
+    data = []
+    for i in n:
+        data.append({
+            'id':i.id,
+            'package': str(i.PACKAGE.title),
+            'description': str(i.PACKAGE.description),
+            'price': str(i.PACKAGE.price),
+            'days': str(i.PACKAGE.days),
+            'date':str(i.date),
+            'STATUS':str(i.status)
+        })
+    print(data)
+    return JsonResponse({'status': 'ok','data': data})
+
+
+def guide_accept_package(request):
+    aid = request.POST['assigned_id']
+    Assign_package.objects.filter(id=aid).update(status='accepted')
+    return JsonResponse({'status': 'ok','message':'accepted'})
+
+def guide_reject_package(request):
+    aid = request.POST['assigned_id']
+    Assign_package.objects.filter(id=aid).update(status='rejected')
+    return JsonResponse({'status': 'ok','message':'rejected'})
+
+
+
+# =======================USER================================
+# ===========================================================
+# ===========================================================
+
+
+
+def user_register(request):
+    name = request.POST['name']
+    email = request.POST['email']
+    place = request.POST['place']
+    dob = request.POST['dob']
+    phone = request.POST['phone']
+    photo = request.FILES['photo']
+    username = request.POST['username']
+    password = request.POST['password']
+    cpassword = request.POST['cpassword']
+
+    fs = FileSystemStorage()
+    path = fs.save(photo.name, photo)
+
+    if password==cpassword:
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'status': 'failed',
+                'message': 'User ID already exists.'})
+        user = User.objects.create_user(username=username, password=password, email=email,first_name=name)
+        user.groups.add(Group.objects.get(name='user'))
+        user.save()
+        res=UserProfile(name=name,email=email,place=place,dob=dob,
+                              phone=phone,photo=path,
+                            status='Active', LOGIN_id=user.id,)
+        res.save()
+
+
+        return JsonResponse({'status': 'ok',
+            'message': 'Account registered successfully.'})
+    else:
+        return JsonResponse({'status': 'failed',
+            'message': 'Passwords do not match.'})
+
+
+
+def user_viewprofile(request):
+    lid = request.POST['lid']
+    print(lid,'login_id================')
+    profile = UserProfile.objects.get(LOGIN_id=lid)
+    print(profile,'-----------------')
+    return JsonResponse({'status': 'ok',
+                         'name': str(profile.name),
+                         'email': str(profile.email),
+                         'place': str(profile.place),
+                         'dob': str(profile.dob),
+                         'photo': str(profile.photo),
+                         'phone':str(profile.phone),})
+
+
+def user_profileviewforedit(request):
+    lid = request.POST['lid']
+    print(lid,'-------------------id')
+    i = UserProfile.objects.get(LOGIN_id=lid)
+    print(i.photo.url, 'photo')
+    return JsonResponse({
+                          'status': 'ok',
+                         'name': str(i.name),
+                         'dob': str(i.dob),
+                         'place': str(i.place),
+                         'email':str(i.email),
+                         'phone':str(i.phone),
+                         'photo':str(i.photo.url),
+                         })
+
+
+
+def user_editprofile(request):
+    lid = request.POST['lid']
+    name = request.POST['name']
+    dob = request.POST['dob']
+    place = request.POST['place']
+    phone = request.POST['phone']
+    email = request.POST['email']
+
+    print(name,'=================name')
+
+    i = UserProfile.objects.get(LOGIN_id=lid)
+    if 'photo' in request.FILES:
+        photo = request.FILES['photo']
+        fs = FileSystemStorage()
+        paths = fs.save(photo.name, photo)
+        i.photo = paths
+        i.save()
+
+    user=i.LOGIN
+    user.email=email
+    user.save()
+
+
+    i.name=name
+    i.dob=dob
+    i.place=place
+    i.phone = phone
+    i.email=email
+    i.save()
+    return JsonResponse({'status': 'ok',
+                         'message': 'Profile edited successfully.'})
+
+
+def user_viewplaces(request):
+    # lid = request.POST['lid']
+    # print(lid,'id----------------')
+
+    n = WildlifePlace.objects.all()
+    data = []
+    for i in n:
+        data.append({
+            'id':i.id,
+            'placename': str(i.place_name),
+            'description': str(i.description),
+            'location': str(i.location),
+            'type': str(i.type),
+            'latitute':str(i.latitute),
+            'longitude':str(i.longitude)
+        })
+    print(data)
+    return JsonResponse({'status': 'ok','data': data})

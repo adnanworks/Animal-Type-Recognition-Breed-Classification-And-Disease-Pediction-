@@ -65,13 +65,27 @@ urlpatterns = [
     path('agent_view_guides/',views.agent_view_guides),
     path('agent_edit_guide/<id>',views.agent_edit_guide),
     path('agent_edit_guide_post/',views.agent_edit_guide_post),
+    path('agent_delete_guide/<id>',views.agent_delete_guide),
 
     path('assign_guide_to_package/<id>',views.assign_guide_to_package),
     path('agent_assign_guide_post/',views.agent_assign_guide_post),
     path('agentview_assign_package/',views.agentview_assign_package),
     path('delete_assign_package/<id>',views.delete_assign_package),
 
-    # =================USER
+    # =================GUIDE
 
     path('flutter_login/',views.flutter_login),
+    path('guide_viewprofile/',views.guide_viewprofile),
+    path('guide_view_assipackages/',views.guide_view_assipackages),
+    path('guide_accept_package/',views.guide_accept_package),
+    path('guide_reject_package/',views.guide_reject_package),
+
+    # =================USER
+
+    path('user_register/',views.user_register),
+    path('user_viewprofile/',views.user_viewprofile),
+    path('user_profileviewforedit/',views.user_profileviewforedit),
+    path('user_editprofile/',views.user_editprofile),
+    path('user_viewplaces/',views.user_viewplaces),
+
 ]

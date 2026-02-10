@@ -1,3 +1,5 @@
+{% extends 'agent/home.html' %}
+{% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +18,7 @@
 <body>
 
 <div class="container">
-    <h2>Assign Guide</h2>
+    <h2 id="ab">Assign Guide</h2>
 
     <form method="post" action="/myapp/agent_assign_guide_post/">
         {% csrf_token %}
@@ -39,3 +41,4 @@
 
 </body>
 </html>
+{% endblock %}

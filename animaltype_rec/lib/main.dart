@@ -1,3 +1,4 @@
+import 'package:animaltype_rec/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,8 +76,8 @@ class _MyHomePageState extends State<ip> {
     sh.setString('url', 'http://${_textController.text}:8000/myapp');
     sh.setString('img_url', 'http://${_textController.text}:8000');
     sh.setString('img_url2', 'http://${_textController.text}:8000/media/');
-    // Navigator.push(context, MaterialPageRoute(
-    //   builder: (context) =>MyLoginPage(title: '',),));
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) =>MyLoginPage(title: '',),));
 
   }
 

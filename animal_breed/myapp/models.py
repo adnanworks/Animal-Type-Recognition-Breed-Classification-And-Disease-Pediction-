@@ -60,11 +60,15 @@ class Assign_package(models.Model):
     GUIDE = models.ForeignKey(Guide, on_delete=models.CASCADE)
     PACKAGE = models.ForeignKey(Package, on_delete=models.CASCADE)
     status=models.CharField(max_length=20,default='assigned')
+    date = models.CharField(max_length=20)
+
 
 class Booking(models.Model):
     USER = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     PACKAGE = models.ForeignKey(Package, on_delete=models.CASCADE)
-    date = models.CharField(max_length=50)
+    booked_date = models.CharField(max_length=50)
+    from_date = models.CharField(max_length=50)
+    to_date = models.CharField(max_length=50)
     status = models.CharField(max_length=50)
 
 

@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'package:animaltype_rec/user/home.dart';
+import 'package:animaltype_rec/user/register.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import 'guide/home.dart';
 
 void main() {
   runApp( mylogin());
@@ -83,33 +87,33 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 ),
               ),
               const SizedBox(height: 30),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text(
-              //       "Register for Current Student: ",
-              //       style: TextStyle(color: Colors.black87),
-              //     ),
-              //     GestureDetector(
-              //       onTap: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(builder: (context) => const reg_CurrentStd()),
-              //         );
-              //       },
-              //       child: const Text(
-              //         "Register",
-              //         style: TextStyle(
-              //           fontWeight: FontWeight.bold,
-              //           color: Colors.orange,
-              //         ),
-              //       ),
-              //
-              //
-              //     ),
-              //   ],
-              //
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "User Register Here : ",
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      );
+                    },
+                    child: const Text(
+                      "Register",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+
+
+                  ),
+                ],
+
+              ),
               const SizedBox(height: 20),
 
               Row(
@@ -191,13 +195,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
           // String oid = data['oid'].toString();
           // await sh.setString("oid", oid);
 
-          // if(type == "student"){
-          //  Navigator.push(context, MaterialPageRoute(builder: (context) => userHomePAge(),));
-          // }
-          // else if (type == "old student"){
-          //   Navigator.push(context, MaterialPageRoute(builder: (context) => oldstd_homePage(),));
-          //
-          // }
+          if(type == "guide"){
+           Navigator.push(context, MaterialPageRoute(builder: (context) => GuideHomePage(),));
+          }
+          else if (type == "user"){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),));
+
+          }
 
         }
       } else {

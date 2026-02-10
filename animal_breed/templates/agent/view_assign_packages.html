@@ -11,10 +11,11 @@
 {% endfor %}
 <h2>Assigned Packages</h2>
 
-<table>
+<table id="ab">
     <tr>
         <th>Sl No</th>
         <th>Guide Name</th>
+        <th>Assigned Date</th>
         <th>Phone</th>
         <th>Package Name</th>
         <th>Place</th>
@@ -26,6 +27,7 @@
     <tr>
         <td>{{ forloop.counter }}</td>
         <td>{{ i.GUIDE.name }}</td>
+        <td>{{ i.date }}</td>
         <td>{{ i.GUIDE.phone }}</td>
         <td>{{ i.PACKAGE.title }}</td>
         <td>{{ i.PACKAGE.PLACE.place_name }}</td>
