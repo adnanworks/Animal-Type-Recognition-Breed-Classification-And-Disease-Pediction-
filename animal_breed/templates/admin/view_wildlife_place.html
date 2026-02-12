@@ -1,48 +1,672 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<body>#}
+{##}
+{#{% for i in messages %}#}
+{#    {{ i }}#}
+{#{% endfor %}#}
+{##}
+{#<table border="1" id="ab">#}
+{#    <thead>#}
+{#        <tr>#}
+{#            <th>#</th>#}
+{#            <th>Place Name</th>#}
+{#            <th>Description</th>#}
+{#            <th>Location</th>#}
+{#            <th>Type</th>#}
+{#            <th>Latitude</th>#}
+{#            <th>Longitude</th>#}
+{#            <th>Actions</th>#}
+{#        </tr>#}
+{#    </thead>#}
+{##}
+{#    <tbody>#}
+{#        {% for i in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>{{ i.place_name }}</td>#}
+{#            <td>{{ i.description }}</td>#}
+{#            <td>{{ i.location }}</td>#}
+{#            <td>{{ i.type }}</td>#}
+{#            <td>{{ i.latitute }}</td>#}
+{#            <td>{{ i.longitude }}</td>#}
+{#            <td>#}
+{#                <a href="/myapp/edit_wildlife_place_get/{{ i.id }}">Edit</a>#}
+{#                <a href="">Delete</a>#}
+{#            </td>#}
+{#        </tr>#}
+{##}
+{#        {% empty %}#}
+{#        <tr>#}
+{#            <td colspan="8">No Wildlife Places Found</td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+{##}
+{#</body>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Wildlife Places</title>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    #ab {
+      width: 100%;
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border: none;
+    }
+
+    .page-title {
+      color: #28a745;
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #28a745;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-title:after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      background: #28a745;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+    }
+
+    thead tr {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    th {
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 18px 15px !important;
+      border-bottom: 3px solid #28a745 !important;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px !important;
+      vertical-align: middle;
+      color: #495057;
+      font-size: 14px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    tr:hover td {
+      background-color: #f8f9fa;
+      transition: all 0.3s ease;
+    }
+
+    .badge-type {
+      padding: 6px 15px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .badge-popular {
+      background: linear-gradient(135deg, #28a745, #218838);
+      color: white;
+      box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+    }
+
+    .badge-non-popular {
+      background: linear-gradient(135deg, #6c757d, #5a6268);
+      color: white;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, #28a745, #218838);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+    }
+
+    .btn-edit:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+      text-decoration: none;
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn-delete:hover {
+      background: linear-gradient(135deg, #c82333, #bd2130);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+      text-decoration: none;
+    }
+
+    .coordinate-badge {
+      background: #e8f5e9;
+      color: #28a745;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px !important;
+      background: #f8f9fa;
+    }
+
+    .empty-state i {
+      font-size: 60px;
+      color: #28a745;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 18px;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #28a745, #218838);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-add:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+      text-decoration: none;
+    }
+
+    .btn-add i {
+      font-size: 16px;
+    }
+
+    .search-box {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 300px;
+    }
+
+    .search-box i {
+      color: #28a745;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 8px 0;
+    }
+
+    .search-box input:focus {
+      box-shadow: none;
+    }
+
+    .header-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .stats-badge {
+      background: #e8f5e9;
+      color: #28a745;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Alert Messages */
+    .alert-messages {
+      margin-bottom: 25px;
+    }
+
+    .alert {
+      border-radius: 12px;
+      padding: 16px 20px;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .alert-success {
+      background: #e8f5e9;
+      color: #28a745;
+      border-left: 4px solid #28a745;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border-left: 4px solid #17a2b8;
+    }
+
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+      border-left: 4px solid #ffc107;
+    }
+
+    .alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        max-width: 100%;
+      }
+
+      .action-btns {
+        flex-direction: column;
+      }
+
+      td, th {
+        white-space: nowrap;
+      }
+
+      .table-responsive {
+        border-radius: 15px;
+      }
+    }
+  </style>
+</head>
+
 <body>
+  <div class="container-fluid px-4">
 
-{% for i in messages %}
-    {{ i }}
-{% endfor %}
+    <!-- Page Title -->
+    <div class="page-title">
+      <i class="fas fa-tree fa-lg"></i>
+      Wildlife Places Management
+    </div>
 
-<table border="1" id="ab">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Place Name</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Type</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+    <!-- Messages -->
+    <div class="alert-messages">
+      {% for i in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="fas fa-check-circle fa-lg"></i>
+          <div class="flex-grow-1">{{ i }}</div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
 
-    <tbody>
-        {% for i in data %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ i.place_name }}</td>
-            <td>{{ i.description }}</td>
-            <td>{{ i.location }}</td>
-            <td>{{ i.type }}</td>
-            <td>{{ i.latitute }}</td>
-            <td>{{ i.longitude }}</td>
+    <!-- Header Toolbar -->
+
+    <!-- Table -->
+    <div class="table-container table-responsive">
+      <table id="ab" class="table">
+        <thead>
+          <tr>
+            <th width="5%">#</th>
+            <th width="15%">
+              <i class="fas fa-map-marker-alt me-1" style="color: #28a745;"></i>
+              Place Name
+            </th>
+            <th width="20%">
+              <i class="fas fa-align-left me-1" style="color: #28a745;"></i>
+              Description
+            </th>
+            <th width="15%">
+              <i class="fas fa-address-card me-1" style="color: #28a745;"></i>
+              Location
+            </th>
+            <th width="10%">
+              <i class="fas fa-tag me-1" style="color: #28a745;"></i>
+              Type
+            </th>
+            <th width="10%">
+              <i class="fas fa-arrow-up me-1" style="color: #28a745;"></i>
+              Latitude
+            </th>
+            <th width="10%">
+              <i class="fas fa-arrow-right me-1" style="color: #28a745;"></i>
+              Longitude
+            </th>
+            <th width="15%">
+              <i class="fas fa-cog me-1" style="color: #28a745;"></i>
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for i in data %}
+          <tr>
             <td>
-                <a href="/myapp/edit_wildlife_place_get/{{ i.id }}">Edit</a>
-                <a href="">Delete</a>
+              <span class="fw-bold">{{ forloop.counter }}</span>
             </td>
-        </tr>
+            <td>
+              <span class="fw-bold">{{ i.place_name }}</span>
+            </td>
+            <td>
+              <div style="max-width: 250px;">
+                {{ i.description|truncatechars:80 }}
+                {% if i.description|length > 80 %}
+                  <a href="#" class="text-primary" style="font-size: 12px;" data-bs-toggle="tooltip" title="{{ i.description }}">
+                    Read more
+                  </a>
+                {% endif %}
+              </div>
+            </td>
+            <td>
+              <i class="fas fa-map-pin me-1" style="color: #6c757d;"></i>
+              {{ i.location }}
+            </td>
+            <td>
+              {% if i.type == "Popular" %}
+                <span class="badge-type badge-popular">
+                  <i class="fas fa-star me-1"></i>
+                  Popular
+                </span>
+              {% else %}
+                <span class="badge-type badge-non-popular">
+                  <i class="fas fa-map me-1"></i>
+                  Non-Popular
+                </span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="coordinate-badge">
+                <i class="fas fa-arrow-up"></i>
+                {{ i.latitute }}
+              </span>
+            </td>
+            <td>
+              <span class="coordinate-badge">
+                <i class="fas fa-arrow-right"></i>
+                {{ i.longitude }}
+              </span>
+            </td>
+            <td>
+              <div class="action-btns">
+                <a href="/myapp/edit_wildlife_place_get/{{ i.id }}#ab" class="btn-edit">
+                  <i class="fas fa-edit"></i>
+                  Edit
+                </a>
+                <a href="#"
+                   class="btn-delete"
+                   onclick="confirmDelete('{{ i.id }}', '{{ i.place_name }}')">
+                  <i class="fas fa-trash-alt"></i>
+                  Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
 
-        {% empty %}
-        <tr>
-            <td colspan="8">No Wildlife Places Found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Stats -->
+    {% if data %}
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+          <div>
+            <i class="fas fa-info-circle text-primary me-2"></i>
+            <span class="text-muted">Showing {{ data|length }} entries</span>
+          </div>
+          <div>
+            <span class="text-muted">
+              <i class="fas fa-calendar-alt me-1"></i>
+              Last updated: {% now "F j, Y" %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+  <!-- Bootstrap JS for tooltips -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Initialize DataTable
+    $(document).ready(function() {
+      $('#ab').DataTable({
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search wildlife places...",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          infoEmpty: "Showing 0 to 0 of 0 entries",
+          infoFiltered: "(filtered from _MAX_ total entries)",
+          zeroRecords: "No matching wildlife places found",
+          paginate: {
+            first: '<i class="fas fa-angle-double-left"></i>',
+            previous: '<i class="fas fa-angle-left"></i>',
+            next: '<i class="fas fa-angle-right"></i>',
+            last: '<i class="fas fa-angle-double-right"></i>'
+          }
+        },
+        columnDefs: [
+          { orderable: false, targets: 7 }, // Disable sorting on actions column
+          { responsivePriority: 1, targets: [0, 1, 4, 7] }, // Priority columns for responsive
+          { responsivePriority: 2, targets: [2, 3, 5, 6] } // Lower priority columns
+        ]
+      });
+
+      // Initialize tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+
+    // Custom search box styling
+    $(document).ready(function() {
+      $('.dataTables_filter').addClass('search-box');
+      $('.dataTables_filter input').attr('placeholder', 'Search wildlife places...');
+      $('.dataTables_filter label').contents().filter(function() {
+        return this.nodeType === 3;
+      }).remove();
+    });
+
+    // Confirmation dialog for delete
+    function confirmDelete(id, placeName) {
+      Swal.fire({
+        title: 'Delete Wildlife Place?',
+        html: `Are you sure you want to delete <strong>${placeName}</strong>?<br>This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        background: 'white',
+        iconColor: '#dc3545',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/myapp/delete_wildlife_place/${id}/`;
+        }
+      });
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+      $('.alert').fadeOut('slow');
+    }, 5000);
+  </script>
+
+  <!-- SweetAlert2 for delete confirmation -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Add delete URL pattern - Make sure this matches your Django URL -->
+  <script>
+    // Add this if you need to handle delete via AJAX
+    function deletePlace(id) {
+      fetch(`/myapp/delete_wildlife_place/${id}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Wildlife place has been deleted.',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    }
+  </script>
 
 </body>
+</html>
 {% endblock %}
+
+

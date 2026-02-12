@@ -1,86 +1,955 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#  <head>#}
+{#    <meta charset="utf-8" />#}
+{#    <title>Zoofari - Zoo & Safari Park Website Template</title>#}
+{#    <meta content="width=device-width, initial-scale=1.0" name="viewport" />#}
+{#    <meta content="" name="keywords" />#}
+{#    <meta content="" name="description" />#}
+{##}
+{#    <!-- Favicon -->#}
+{#    <link href="/media/img/favicon.ico" rel="icon" />#}
+{##}
+{#    <!-- Google Web Fonts -->#}
+{#    <link rel="preconnect" href="https://fonts.googleapis.com" />#}
+{#    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />#}
+{#    <link#}
+{#      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Quicksand:wght@600;700&display=swap"#}
+{#      rel="stylesheet"#}
+{#    />#}
+{##}
+{#    <!-- Icon Font Stylesheet -->#}
+{#    <link#}
+{#      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"#}
+{#      rel="stylesheet"#}
+{#    />#}
+{#    <link#}
+{#      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"#}
+{#      rel="stylesheet"#}
+{#    />#}
+{##}
+{#    <!-- Libraries Stylesheet -->#}
+{#    <link href="/media/lib/animate/animate.min.css" rel="stylesheet" />#}
+{#    <link href="/media/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />#}
+{#    <link href="/media/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />#}
+{##}
+{#    <!-- Customized Bootstrap Stylesheet -->#}
+{#    <link href="/media/css/bootstrap.min.css" rel="stylesheet" />#}
+{##}
+{#    <!-- Template Stylesheet -->#}
+{#    <link href="/media/css/style.css" rel="stylesheet" />#}
+{#  </head>#}
+{##}
+{#  <body>#}
+{#    <!-- Spinner Start -->#}
+{#    <div#}
+{#      id="spinner"#}
+{#      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"#}
+{#    >#}
+{#      <div#}
+{#        class="spinner-border text-primary"#}
+{#        style="width: 3rem; height: 3rem"#}
+{#        role="status"#}
+{#      >#}
+{#        <span class="sr-only">Loading...</span>#}
+{#      </div>#}
+{#    </div>#}
+{#    <!-- Spinner End -->#}
+{##}
+{#    <!-- Topbar Start -->#}
+{#    <div class="container-fluid bg-light p-0 wow fadeIn" data-wow-delay="0.1s">#}
+{#      <div class="row gx-0 d-none d-lg-flex">#}
+{#        <div class="col-lg-7 px-5 text-start">#}
+{#          <div class="h-100 d-inline-flex align-items-center py-3 me-4">#}
+{#            <small class="fa fa-map-marker-alt text-primary me-2"></small>#}
+{#            <small>123 Street, New York, USA</small>#}
+{#          </div>#}
+{#          <div class="h-100 d-inline-flex align-items-center py-3">#}
+{#            <small class="far fa-clock text-primary me-2"></small>#}
+{#            <small>Mon - Fri : 09.00 AM - 09.00 PM</small>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-lg-5 px-5 text-end">#}
+{#          <div class="h-100 d-inline-flex align-items-center py-3 me-4">#}
+{#            <small class="fa fa-phone-alt text-primary me-2"></small>#}
+{#            <small>+012 345 6789</small>#}
+{#          </div>#}
+{#          <div class="h-100 d-inline-flex align-items-center">#}
+{#            <a class="btn btn-sm-square bg-white text-primary me-1" href=""#}
+{#              ><i class="fab fa-facebook-f"></i#}
+{#            ></a>#}
+{#            <a class="btn btn-sm-square bg-white text-primary me-1" href=""#}
+{#              ><i class="fab fa-twitter"></i#}
+{#            ></a>#}
+{#            <a class="btn btn-sm-square bg-white text-primary me-1" href=""#}
+{#              ><i class="fab fa-linkedin-in"></i#}
+{#            ></a>#}
+{#            <a class="btn btn-sm-square bg-white text-primary me-0" href=""#}
+{#              ><i class="fab fa-instagram"></i#}
+{#            ></a>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#    <!-- Topbar End -->#}
+{##}
+{#    <!-- Navbar Start -->#}
+{#    <nav#}
+{#      class="navbar navbar-expand-lg bg-white navbar-light sticky-top py-lg-0 px-4 px-lg-5 wow fadeIn"#}
+{#      data-wow-delay="0.1s"#}
+{#    >#}
+{#      <a href="index.html" class="navbar-brand p-0">#}
+{#        <img class="img-fluid me-3" src="/media/img/icon/icon-10.png" alt="Icon" />#}
+{#        <h1 class="m-0 text-primary">Animal Recognition</h1>#}
+{#      </a>#}
+{#      <button#}
+{#        type="button"#}
+{#        class="navbar-toggler"#}
+{#        data-bs-toggle="collapse"#}
+{#        data-bs-target="#navbarCollapse"#}
+{#      >#}
+{#        <span class="navbar-toggler-icon"></span>#}
+{#      </button>#}
+{#      <div class="collapse navbar-collapse py-4 py-lg-0" id="navbarCollapse">#}
+{#        <div class="navbar-nav ms-auto">#}
+{#          <a href="index.html" class="nav-item nav-link active">Home</a>#}
+{#          <a href="about.html" class="nav-item nav-link">About</a>#}
+{#          <a href="service.html" class="nav-item nav-link">Services</a>#}
+{#          <div class="nav-item dropdown">#}
+{#            <a#}
+{#              href="#"#}
+{#              class="nav-link dropdown-toggle"#}
+{#              data-bs-toggle="dropdown"#}
+{#              >Pages</a#}
+{#            >#}
+{#            <div class="dropdown-menu rounded-0 rounded-bottom m-0">#}
+{#              <a href="animal.html" class="dropdown-item">Our Animals</a>#}
+{#              <a href="membership.html" class="dropdown-item">Membership</a>#}
+{#              <a href="visiting.html" class="dropdown-item">Visiting Hours</a>#}
+{#              <a href="testimonial.html" class="dropdown-item">Testimonial</a>#}
+{#              <a href="404.html" class="dropdown-item">404 Page</a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <a href="contact.html" class="nav-item nav-link">Contact</a>#}
+{#        </div>#}
+{#        <a href="/myapp/" class="btn btn-primary"#}
+{#          >Back<i class="fa fa-arrow-right ms-3"></i#}
+{#        ></a>#}
+{#      </div>#}
+{#    </nav>#}
+{##}
+{#{% for i in messages %}#}
+{#    <div class="alert alert-info text-center mt-3">{{ i }}</div>#}
+{#{% endfor %}#}
+{##}
+{#<!-- FORM -->#}
+{#<div class="form-container">#}
+{#    <h3 class="form-title">AGENT REGISTRATION</h3>#}
+{##}
+{#    <form action="/myapp/agent_register_post/"#}
+{#          method="post"#}
+{#          enctype="multipart/form-data"#}
+{#          name="regForm"#}
+{#          onsubmit="return validatePasswords()">#}
+{##}
+{#        {% csrf_token %}#}
+{##}
+{#        <label>Name</label>#}
+{#        <input type="text" class="form-control" name="name" required><br>#}
+{##}
+{#        <label>Email</label>#}
+{#        <input type="email" class="form-control" name="email" required><br>#}
+{##}
+{#        <label>Place</label>#}
+{#        <input type="text" class="form-control" name="place" required><br>#}
+{##}
+{#        <label>Phone</label>#}
+{#        <input type="text"#}
+{#               class="form-control"#}
+{#               name="phone"#}
+{#               pattern="^[6-9][0-9]{9}$"#}
+{#               title="Phone must start with 6/7/8/9 and be exactly 10 digits"#}
+{#               required><br>#}
+{##}
+{#        <label>Upload Photo</label>#}
+{#        <input type="file"#}
+{#               class="form-control"#}
+{#               name="photo"#}
+{#               accept="image/*"#}
+{#               required><br>#}
+{##}
+{#        <label>Password</label>#}
+{#        <input type="password"#}
+{#               class="form-control"#}
+{#               name="pwd"#}
+{#               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"#}
+{#               title="Min 8 chars, 1 capital letter, 1 special character."#}
+{#               required><br>#}
+{##}
+{#        <label>Confirm Password</label>#}
+{#        <input type="password"#}
+{#               class="form-control"#}
+{#               name="cpwd"#}
+{#               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"#}
+{#               title="Min 8 chars, 1 capital letter, 1 special character."#}
+{#               required><br>#}
+{##}
+{#        <button type="submit" class="btn btn-primary">#}
+{#            Register#}
+{#        </button>#}
+{##}
+{#    </form>#}
+{#</div>#}
+{##}
+{#<!-- VALIDATION SCRIPT -->#}
+{#<script>#}
+{#function validatePasswords() {#}
+{#    let pwd = document.forms["regForm"]["pwd"].value;#}
+{#    let cpwd = document.forms["regForm"]["cpwd"].value;#}
+{##}
+{#    if (pwd !== cpwd) {#}
+{#        alert("Passwords do not match!");#}
+{#        return false;#}
+{#    }#}
+{#    return true;#}
+{#}#}
+{#</script>#}
+{##}
+{#</body>#}
+{#</html>#}
+{##}
+{##}
+{##}
+{##}
+{##}
+{#    <!-- Footer Start -->#}
+{#    <div#}
+{#      class="container-fluid footer bg-dark text-light footer mt-5 pt-5 wow fadeIn"#}
+{#      data-wow-delay="0.1s"#}
+{#    >#}
+{#      <div class="container py-5">#}
+{#        <div class="row g-5">#}
+{#          <div class="col-lg-3 col-md-6">#}
+{#            <h5 class="text-light mb-4">Address</h5>#}
+{#            <p class="mb-2">#}
+{#              <i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA#}
+{#            </p>#}
+{#            <p class="mb-2">#}
+{#              <i class="fa fa-phone-alt me-3"></i>+012 345 67890#}
+{#            </p>#}
+{#            <p class="mb-2">#}
+{#              <i class="fa fa-envelope me-3"></i>info@example.com#}
+{#            </p>#}
+{#            <div class="d-flex pt-2">#}
+{#              <a class="btn btn-outline-light btn-social" href=""#}
+{#                ><i class="fab fa-twitter"></i#}
+{#              ></a>#}
+{#              <a class="btn btn-outline-light btn-social" href=""#}
+{#                ><i class="fab fa-facebook-f"></i#}
+{#              ></a>#}
+{#              <a class="btn btn-outline-light btn-social" href=""#}
+{#                ><i class="fab fa-youtube"></i#}
+{#              ></a>#}
+{#              <a class="btn btn-outline-light btn-social" href=""#}
+{#                ><i class="fab fa-linkedin-in"></i#}
+{#              ></a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="col-lg-3 col-md-6">#}
+{#            <h5 class="text-light mb-4">Quick Links</h5>#}
+{#            <a class="btn btn-link" href="">About Us</a>#}
+{#            <a class="btn btn-link" href="">Contact Us</a>#}
+{#            <a class="btn btn-link" href="">Our Services</a>#}
+{#            <a class="btn btn-link" href="">Terms & Condition</a>#}
+{#            <a class="btn btn-link" href="">Support</a>#}
+{#          </div>#}
+{#          <div class="col-lg-3 col-md-6">#}
+{#            <h5 class="text-light mb-4">Popular Links</h5>#}
+{#            <a class="btn btn-link" href="">About Us</a>#}
+{#            <a class="btn btn-link" href="">Contact Us</a>#}
+{#            <a class="btn btn-link" href="">Our Services</a>#}
+{#            <a class="btn btn-link" href="">Terms & Condition</a>#}
+{#            <a class="btn btn-link" href="">Support</a>#}
+{#          </div>#}
+{#          <div class="col-lg-3 col-md-6">#}
+{#            <h5 class="text-light mb-4">Newsletter</h5>#}
+{#            <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>#}
+{#            <div class="position-relative mx-auto" style="max-width: 400px">#}
+{#              <input#}
+{#                class="form-control border-0 w-100 py-3 ps-4 pe-5"#}
+{#                type="text"#}
+{#                placeholder="Your email"#}
+{#              />#}
+{#              <button#}
+{#                type="button"#}
+{#                class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2"#}
+{#              >#}
+{#                SignUp#}
+{#              </button>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#      <div class="container">#}
+{#        <div class="copyright">#}
+{#          <div class="row">#}
+{#            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">#}
+{#              &copy; <a class="border-bottom" href="#">Your Site Name</a>, All#}
+{#              Right Reserved.#}
+{#            </div>#}
+{#            <div class="col-md-6 text-center text-md-end">#}
+{#              <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->#}
+{#              Designed By#}
+{#              <a class="border-bottom" href="https://htmlcodex.com"#}
+{#                >HTML Codex</a#}
+{#              >#}
+{#              <br />Distributed By:#}
+{#              <a href="https://themewagon.com" target="_blank">ThemeWagon</a>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#    <!-- Footer End -->#}
+{##}
+{#    <!-- Back to Top -->#}
+{#    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"#}
+{#      ><i class="bi bi-arrow-up"></i#}
+{#    ></a>#}
+{##}
+{#    <!-- JavaScript Libraries -->#}
+{#    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>#}
+{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>#}
+{#    <script src="/media/lib/wow/wow.min.js"></script>#}
+{#    <script src="/media/lib/easing/easing.min.js"></script>#}
+{#    <script src="/media/lib/waypoints/waypoints.min.js"></script>#}
+{#    <script src="/media/lib/counterup/counterup.min.js"></script>#}
+{#    <script src="/media/lib/owlcarousel/owl.carousel.min.js"></script>#}
+{#    <script src="/media/lib/lightbox/js/lightbox.min.js"></script>#}
+{##}
+{#    <!-- Template Javascript -->#}
+{#    <script src="/media/js/main.js"></script>#}
+{#  </body>#}
+{#</html>#}
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for i in messages %}
-    <div class="alert alert-info text-center mt-3">{{ i }}</div>
-{% endfor %}
+  <head>
+    <meta charset="utf-8" />
+    <title>Zoofari - Zoo & Safari Park Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
 
-<!-- FORM -->
-<div class="form-container">
-    <h3 class="form-title">AGENT REGISTRATION</h3>
+    <!-- Favicon -->
+    <link href="/media/img/favicon.ico" rel="icon" />
 
-    <form action="/myapp/agent_register_post/"
-          method="post"
-          enctype="multipart/form-data"
-          name="regForm"
-          onsubmit="return validatePasswords()">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Quicksand:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
 
-        {% csrf_token %}
+    <!-- Icon Font Stylesheet -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
 
-        <label>Name</label>
-        <input type="text" class="form-control" name="name" required><br>
+    <!-- Libraries Stylesheet -->
+    <link href="/media/lib/animate/animate.min.css" rel="stylesheet" />
+    <link href="/media/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/media/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-        <label>Email</label>
-        <input type="email" class="form-control" name="email" required><br>
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/media/css/bootstrap.min.css" rel="stylesheet" />
 
-        <label>Place</label>
-        <input type="text" class="form-control" name="place" required><br>
+    <!-- Template Stylesheet -->
+    <link href="/media/css/style.css" rel="stylesheet" />
 
-        <label>Phone</label>
-        <input type="text"
-               class="form-control"
-               name="phone"
-               pattern="^[6-9][0-9]{9}$"
-               title="Phone must start with 6/7/8/9 and be exactly 10 digits"
-               required><br>
+    <style>
+        .password-requirements {
+            font-size: 0.85rem;
+            background-color: #f8f9fa;
+            border-left: 3px solid #28a745;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .requirement-item {
+            color: #6c757d;
+            margin-bottom: 3px;
+        }
+        .requirement-item.valid {
+            color: #28a745;
+        }
+        .requirement-item i {
+            width: 18px;
+            margin-right: 5px;
+        }
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: #28a745;
+            opacity: 0.8;
+        }
+        .form-floating > .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.1);
+        }
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .text-primary {
+            color: #28a745 !important;
+        }
+        .input-group-text {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .border-primary {
+            border-color: #28a745 !important;
+        }
+        .bg-primary {
+            background-color: #28a745 !important;
+        }
+        a.text-primary:hover {
+            color: #218838 !important;
+        }
+        .btn-outline-primary {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-primary:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
+  </head>
 
-        <label>Upload Photo</label>
-        <input type="file"
-               class="form-control"
-               name="photo"
-               accept="image/*"
-               required><br>
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div
+        class="spinner-border text-primary"
+        style="width: 3rem; height: 3rem"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <!-- Spinner End -->
 
-        <label>Password</label>
-        <input type="password"
-               class="form-control"
-               name="pwd"
-               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"
-               title="Min 8 chars, 1 capital letter, 1 special character."
-               required><br>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light p-0 wow fadeIn" data-wow-delay="0.1s">
+      <div class="row gx-0 d-none d-lg-flex">
+        <div class="col-lg-7 px-5 text-start">
+          <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+            <small class="fa fa-map-marker-alt text-primary me-2"></small>
+            <small>123 Street, New York, USA</small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center py-3">
+            <small class="far fa-clock text-primary me-2"></small>
+            <small>Mon - Fri : 09.00 AM - 09.00 PM</small>
+          </div>
+        </div>
+        <div class="col-lg-5 px-5 text-end">
+          <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+            <small class="fa fa-phone-alt text-primary me-2"></small>
+            <small>+012 345 6789</small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center">
+            <a class="btn btn-sm-square bg-white text-primary me-1" href=""
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a class="btn btn-sm-square bg-white text-primary me-1" href=""
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a class="btn btn-sm-square bg-white text-primary me-1" href=""
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a class="btn btn-sm-square bg-white text-primary me-0" href=""
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Topbar End -->
 
-        <label>Confirm Password</label>
-        <input type="password"
-               class="form-control"
-               name="cpwd"
-               pattern="(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}"
-               title="Min 8 chars, 1 capital letter, 1 special character."
-               required><br>
+    <!-- Navbar Start -->
+    <nav
+      class="navbar navbar-expand-lg bg-white navbar-light sticky-top py-lg-0 px-4 px-lg-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <a href="index.html" class="navbar-brand p-0">
+        <img class="img-fluid me-3" src="/media/img/icon/icon-10.png" alt="Icon" />
+        <h1 class="m-0 text-primary">Animal Recognition</h1>
+      </a>
+      <button
+        type="button"
+        class="navbar-toggler"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse py-4 py-lg-0" id="navbarCollapse">
+        <div class="navbar-nav ms-auto">
+        </div>
+        <a href="/myapp/login_get/" class="btn btn-primary"
+          >Back<i class="fa fa-arrow-right ms-3"></i
+        ></a>
+      </div>
+    </nav>
+    <!-- Navbar End -->
 
-        <button type="submit" class="btn btn-primary">
-            Register
-        </button>
+    <!-- Messages -->
+    <div class="container mt-4">
+        {% for i in messages %}
+            <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
 
-    </form>
-</div>
+    <!-- Agent Registration Form Start - Redesigned to match template with GREEN theme -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="bg-light rounded p-5">
+                        <div class="text-center mb-5">
+                            <img class="img-fluid mb-4" src="/media/img/icon/icon-10.png" alt="Icon" style="width: 80px;">
+                            <h2 class="display-6 text-primary mb-3">Agent Registration</h2>
+                            <p class="text-muted">Join our team of wildlife recognition experts</p>
+                        </div>
 
-<!-- VALIDATION SCRIPT -->
-<script>
-function validatePasswords() {
-    let pwd = document.forms["regForm"]["pwd"].value;
-    let cpwd = document.forms["regForm"]["cpwd"].value;
+                        <form action="/myapp/agent_register_post/"
+                              method="post"
+                              enctype="multipart/form-data"
+                              name="regForm"
+                              onsubmit="return validateForm()">
 
-    if (pwd !== cpwd) {
-        alert("Passwords do not match!");
-        return false;
+                            {% csrf_token %}
+
+                            <div class="row g-4">
+                                <!-- Name Field -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="name"
+                                               name="name"
+                                               placeholder="Full Name"
+                                               required>
+                                        <label for="name">
+                                            <i class="fas fa-user text-primary me-2"></i>Full Name
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Email Field -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="email"
+                                               class="form-control"
+                                               id="email"
+                                               name="email"
+                                               placeholder="Email Address"
+                                               required>
+                                        <label for="email">
+                                            <i class="fas fa-envelope text-primary me-2"></i>Email Address
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Place Field -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="place"
+                                               name="place"
+                                               placeholder="Location"
+                                               required>
+                                        <label for="place">
+                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>Place / Location
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Field with Validation -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="tel"
+                                               class="form-control"
+                                               id="phone"
+                                               name="phone"
+                                               placeholder="Phone Number"
+                                               pattern="^[6-9][0-9]{9}$"
+                                               title="Phone must start with 6,7,8 or 9 and be exactly 10 digits"
+                                               onkeyup="validatePhone()"
+                                               required>
+                                        <label for="phone">
+                                            <i class="fas fa-phone-alt text-primary me-2"></i>Phone Number
+                                        </label>
+                                    </div>
+                                    <small id="phoneHelp" class="form-text text-muted mt-1">
+                                        <i class="fas fa-info-circle text-primary me-1"></i>
+                                        Must start with 6,7,8 or 9 and be exactly 10 digits
+                                    </small>
+                                    <div id="phoneValidation" class="small mt-1"></div>
+                                </div>
+
+                                <!-- Photo Upload Field - Styled -->
+                                <div class="col-12">
+                                    <label class="form-label text-muted mb-2">
+                                        <i class="fas fa-camera text-primary me-2"></i>Profile Photo
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="file"
+                                               class="form-control"
+                                               name="photo"
+                                               accept="image/*"
+                                               required>
+                                        <span class="input-group-text bg-primary text-white">
+                                            <i class="fas fa-upload"></i>
+                                        </span>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-image text-primary me-1"></i>
+                                        Upload a clear profile photo (JPG, PNG format)
+                                    </small>
+                                </div>
+
+                                <!-- Password Field with Requirements -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="password"
+                                               class="form-control"
+                                               id="pwd"
+                                               name="pwd"
+                                               placeholder="Password"
+                                               onkeyup="validatePassword()"
+                                               required>
+                                        <label for="pwd">
+                                            <i class="fas fa-lock text-primary me-2"></i>Password
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Confirm Password Field -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="password"
+                                               class="form-control"
+                                               id="cpwd"
+                                               name="cpwd"
+                                               placeholder="Confirm Password"
+                                               onkeyup="validatePasswordMatch()"
+                                               required>
+                                        <label for="cpwd">
+                                            <i class="fas fa-lock text-primary me-2"></i>Confirm Password
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Password Requirements Box -->
+                                <div class="col-12">
+                                    <div class="password-requirements">
+                                        <strong class="text-dark">
+                                            <i class="fas fa-shield-alt text-primary me-2"></i>
+                                            Password Requirements:
+                                        </strong>
+                                        <div id="length-check" class="requirement-item">
+                                            <i class="fas fa-circle text-primary"></i> At least 8 characters
+                                        </div>
+                                        <div id="uppercase-check" class="requirement-item">
+                                            <i class="fas fa-circle text-primary"></i> At least 1 uppercase letter
+                                        </div>
+                                        <div id="special-check" class="requirement-item">
+                                            <i class="fas fa-circle text-primary"></i> At least 1 special character (!@#$%^&*)
+                                        </div>
+                                        <div id="match-check" class="requirement-item">
+                                            <i class="fas fa-circle text-primary"></i> Passwords match
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-primary py-3 px-5">
+                                        <i class="fas fa-user-plus me-2"></i>Register as Agent
+                                    </button>
+                                </div>
+
+                                <!-- Login Link -->
+                                <div class="col-12 text-center mt-3">
+                                    <p class="mb-0">Already have an account?
+                                        <a href="/myapp/login_get/" class="text-primary fw-bold">
+                                            Login Here <i class="fa fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Agent Registration Form End -->
+
+    <!-- Footer Start -->
+    <div
+      class="container-fluid footer bg-dark text-light footer mt-5 pt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container py-5">
+        <div class="row g-5">
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Address</h5>
+            <p class="mb-2">
+              <i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-phone-alt me-3"></i>+012 345 67890
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-envelope me-3"></i>info@example.com
+            </p>
+            <div class="d-flex pt-2">
+              <a class="btn btn-outline-light btn-social" href=""
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a class="btn btn-outline-light btn-social" href=""
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a class="btn btn-outline-light btn-social" href=""
+                ><i class="fab fa-youtube"></i
+              ></a>
+              <a class="btn btn-outline-light btn-social" href=""
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Quick Links</h5>
+            <a class="btn btn-link" href="">About Us</a>
+            <a class="btn btn-link" href="">Contact Us</a>
+            <a class="btn btn-link" href="">Our Services</a>
+            <a class="btn btn-link" href="">Terms & Condition</a>
+            <a class="btn btn-link" href="">Support</a>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Popular Links</h5>
+            <a class="btn btn-link" href="">About Us</a>
+            <a class="btn btn-link" href="">Contact Us</a>
+            <a class="btn btn-link" href="">Our Services</a>
+            <a class="btn btn-link" href="">Terms & Condition</a>
+            <a class="btn btn-link" href="">Support</a>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-light mb-4">Newsletter</h5>
+            <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+            <div class="position-relative mx-auto" style="max-width: 400px">
+              <input
+                class="form-control border-0 w-100 py-3 ps-4 pe-5"
+                type="text"
+                placeholder="Your email"
+              />
+              <button
+                type="button"
+                class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2"
+              >
+                SignUp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="copyright">
+          <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+              &copy; <a class="border-bottom" href="#">Your Site Name</a>, All
+              Right Reserved.
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+              Designed By
+              <a class="border-bottom" href="https://htmlcodex.com"
+                >HTML Codex</a
+              >
+              <br />Distributed By:
+              <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+      ><i class="bi bi-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/media/lib/wow/wow.min.js"></script>
+    <script src="/media/lib/easing/easing.min.js"></script>
+    <script src="/media/lib/waypoints/waypoints.min.js"></script>
+    <script src="/media/lib/counterup/counterup.min.js"></script>
+    <script src="/media/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/media/lib/lightbox/js/lightbox.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/media/js/main.js"></script>
+
+    <!-- Validation Script -->
+    <script>
+    // Phone validation with real-time feedback
+    function validatePhone() {
+        let phone = document.getElementById("phone").value;
+        let phoneValidation = document.getElementById("phoneValidation");
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        if (phone.length > 0) {
+            if (phonePattern.test(phone)) {
+                phoneValidation.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> Valid phone number</span>';
+            } else {
+                if (phone.length !== 10) {
+                    phoneValidation.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-circle"></i> Phone must be exactly 10 digits</span>';
+                } else if (!/[6-9]/.test(phone[0])) {
+                    phoneValidation.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-circle"></i> Phone must start with 6,7,8 or 9</span>';
+                } else {
+                    phoneValidation.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-circle"></i> Invalid phone number</span>';
+                }
+            }
+        } else {
+            phoneValidation.innerHTML = '';
+        }
     }
-    return true;
-}
-</script>
 
-</body>
+    // Password validation with real-time feedback
+    function validatePassword() {
+        let pwd = document.getElementById("pwd").value;
+
+        // Check length
+        if (pwd.length >= 8) {
+            document.getElementById("length-check").innerHTML = '<i class="fas fa-check-circle text-success"></i> At least 8 characters';
+            document.getElementById("length-check").classList.add("valid");
+        } else {
+            document.getElementById("length-check").innerHTML = '<i class="fas fa-circle text-primary"></i> At least 8 characters';
+            document.getElementById("length-check").classList.remove("valid");
+        }
+
+        // Check uppercase
+        if (/[A-Z]/.test(pwd)) {
+            document.getElementById("uppercase-check").innerHTML = '<i class="fas fa-check-circle text-success"></i> At least 1 uppercase letter';
+            document.getElementById("uppercase-check").classList.add("valid");
+        } else {
+            document.getElementById("uppercase-check").innerHTML = '<i class="fas fa-circle text-primary"></i> At least 1 uppercase letter';
+            document.getElementById("uppercase-check").classList.remove("valid");
+        }
+
+        // Check special character
+        if (/[!@#$%^&*]/.test(pwd)) {
+            document.getElementById("special-check").innerHTML = '<i class="fas fa-check-circle text-success"></i> At least 1 special character (!@#$%^&*)';
+            document.getElementById("special-check").classList.add("valid");
+        } else {
+            document.getElementById("special-check").innerHTML = '<i class="fas fa-circle text-primary"></i> At least 1 special character (!@#$%^&*)';
+            document.getElementById("special-check").classList.remove("valid");
+        }
+
+        // Check password match
+        validatePasswordMatch();
+    }
+
+    // Password match validation
+    function validatePasswordMatch() {
+        let pwd = document.getElementById("pwd").value;
+        let cpwd = document.getElementById("cpwd").value;
+        let matchCheck = document.getElementById("match-check");
+
+        if (cpwd.length > 0) {
+            if (pwd === cpwd) {
+                matchCheck.innerHTML = '<i class="fas fa-check-circle text-success"></i> Passwords match';
+                matchCheck.classList.add("valid");
+            } else {
+                matchCheck.innerHTML = '<i class="fas fa-exclamation-circle text-danger"></i> Passwords do not match';
+                matchCheck.classList.remove("valid");
+            }
+        } else {
+            matchCheck.innerHTML = '<i class="fas fa-circle text-primary"></i> Passwords match';
+            matchCheck.classList.remove("valid");
+        }
+    }
+
+    // Form validation before submit
+    function validateForm() {
+        let pwd = document.getElementById("pwd").value;
+        let cpwd = document.getElementById("cpwd").value;
+        let phone = document.getElementById("phone").value;
+        let phonePattern = /^[6-9][0-9]{9}$/;
+        let passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+
+        // Validate phone
+        if (!phonePattern.test(phone)) {
+            alert("❌ Please enter a valid 10-digit phone number starting with 6,7,8 or 9");
+            return false;
+        }
+
+        // Validate password
+        if (!passwordPattern.test(pwd)) {
+            alert("❌ Password must be at least 8 characters with 1 uppercase letter and 1 special character");
+            return false;
+        }
+
+        // Validate password match
+        if (pwd !== cpwd) {
+            alert("❌ Passwords do not match!");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Initialize validation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set default state for password requirements
+        validatePassword();
+
+        // Add phone validation listener
+        document.getElementById("phone").addEventListener('keyup', validatePhone);
+    });
+    </script>
+  </body>
 </html>

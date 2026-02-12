@@ -68,7 +68,7 @@ class Booking(models.Model):
     PACKAGE = models.ForeignKey(Package, on_delete=models.CASCADE)
     booked_date = models.CharField(max_length=50)
     from_date = models.CharField(max_length=50)
-    to_date = models.CharField(max_length=50)
+
     status = models.CharField(max_length=50)
 
 

@@ -1,55 +1,589 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{# {% for i in messages %}#}
+{#    <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 500px; width: 90%;">#}
+{#      <i class="bi bi-info-circle me-2"></i>{{ i }}#}
+{#      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>#}
+{#    </div>#}
+{#  {% endfor %}#}
+{##}
+{#  <div class="card">#}
+{#    <div class="card-header">#}
+{#      <h2 class="card-title">#}
+{#        <i class="bi bi-shield-lock"></i>#}
+{#        Change Password#}
+{#      </h2>#}
+{#    </div>#}
+{##}
+{#    <div class="card-body">#}
+{#      <form method="POST" action="/myapp/changepwd_admin_post/" novalidate id="changePwdForm">#}
+{##}
+{#        <div class="mb-4" id="ab">#}
+{#          <label for="cpass" class="form-label">Current Password</label>#}
+{#          <input type="password" name="cpass" class="form-control" id="cpass" required />#}
+{#          <div class="invalid-feedback">Please enter your current password.</div>#}
+{#        </div>#}
+{##}
+{#        <div class="mb-4">#}
+{#          <label for="npass" class="form-label">New Password</label>#}
+{#          <input type="password" name="npass" class="form-control" id="npass" minlength="8" required />#}
+{#          <div class="invalid-feedback">New password must be at least 8 characters long.</div>#}
+{#        </div>#}
+{##}
+{#        <div class="mb-4">#}
+{#          <label for="cmpass" class="form-label">Confirm Password</label>#}
+{#          <input type="password" name="cmpass" class="form-control" id="cmpass" minlength="8" required />#}
+{#          <div class="invalid-feedback">New password must be at least 8 characters long.</div>#}
+{#        </div>#}
+{##}
+{#        <button type="submit" name="submit" class="btn btn-primary">#}
+{#          <i class="bi bi-key me-2"></i>Change Password#}
+{#        </button>#}
+{##}
+{#      </form>#}
+{#    </div>#}
+{#  </div>#}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Change Password</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .password-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .password-card-header {
+            background: linear-gradient(135deg, #28a745, #218838);
+            padding: 25px 30px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .password-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .password-card-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .password-card-title i {
+            font-size: 28px;
+        }
+
+        .password-card-body {
+            padding: 35px 30px;
+        }
+
+        .password-form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-form-label i {
+            color: #28a745;
+            width: 18px;
+        }
+
+        .password-form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .password-form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .password-form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .password-form-control.is-valid {
+            border-color: #28a745;
+            background-image: none;
+        }
+
+        .password-invalid-feedback {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .password-valid-feedback {
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .password-requirements-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-top: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .password-requirement-title {
+            color: #2c3e50;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .password-requirement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .password-requirement-item {
+            color: #6c757d;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-requirement-item.valid {
+            color: #28a745;
+        }
+
+        .password-requirement-item i {
+            width: 16px;
+            font-size: 12px;
+        }
+
+        .password-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .password-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .password-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .password-strength-bar {
+            margin-top: 10px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .strength-weak { background: #dc3545; width: 25%; }
+        .strength-fair { background: #ffc107; width: 50%; }
+        .strength-good { background: #17a2b8; width: 75%; }
+        .strength-strong { background: #28a745; width: 100%; }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .password-card {
+                margin: 15px;
+            }
+
+            .password-card-header {
+                padding: 20px;
+            }
+
+            .password-card-body {
+                padding: 25px 20px;
+            }
+
+            .password-card-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Override any existing admin styles - ONLY for form elements */
+        .alert.fixed-top-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            max-width: 500px;
+            width: 90%;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(40,167,69,0.2);
+        }
+    </style>
 </head>
 <body>
- {% for i in messages %}
-    <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 500px; width: 90%;">
-      <i class="bi bi-info-circle me-2"></i>{{ i }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  {% endfor %}
+    <!-- Messages - Only styled, position preserved -->
+    {% for i in messages %}
+        <div class="alert alert-success alert-dismissible fade show fixed-top-message" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ i }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
-  <div class="card">
-    <div class="card-header">
-      <h2 class="card-title">
-        <i class="bi bi-shield-lock"></i>
-        Change Password
-      </h2>
-    </div>
-
-    <div class="card-body">
-      <form method="POST" action="/myapp/changepwd_admin_post/" novalidate id="changePwdForm">
-
-        <div class="mb-4">
-          <label for="cpass" class="form-label">Current Password</label>
-          <input type="password" name="cpass" class="form-control" id="cpass" required />
-          <div class="invalid-feedback">Please enter your current password.</div>
+    <!-- Change Password Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="password-card">
+        <div class="password-card-header">
+            <h2 class="password-card-title">
+                <i class="fas fa-shield-alt"></i>
+                Change Password
+            </h2>
         </div>
 
-        <div class="mb-4">
-          <label for="npass" class="form-label">New Password</label>
-          <input type="password" name="npass" class="form-control" id="npass" minlength="8" required />
-          <div class="invalid-feedback">New password must be at least 8 characters long.</div>
+        <div class="password-card-body">
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, NAME, ID -->
+            <form method="POST" action="/myapp/changepwd_admin_post/" novalidate id="changePwdForm">
+                {% csrf_token %}
+
+                <!-- Current Password -->
+                <div class="mb-4" id="ab">
+                    <label for="cpass" class="password-form-label">
+                        <i class="fas fa-lock"></i>
+                        Current Password
+                    </label>
+                    <input type="password"
+                           name="cpass"
+                           class="password-form-control"
+                           id="cpass"
+                           required />
+                    <div class="password-invalid-feedback">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Please enter your current password.
+                    </div>
+                </div>
+
+                <!-- New Password -->
+                <div class="mb-4">
+                    <label for="npass" class="password-form-label">
+                        <i class="fas fa-key"></i>
+                        New Password
+                    </label>
+                    <input type="password"
+                           name="npass"
+                           class="password-form-control"
+                           id="npass"
+                           onkeyup="validatePassword()"
+                           required />
+                    <div class="password-invalid-feedback" id="npass-feedback">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Password must meet all requirements below.
+                    </div>
+
+                    <!-- Password Strength Bar -->
+                    <div class="password-strength-bar">
+                        <div id="strengthBar" class="strength-bar-fill"></div>
+                    </div>
+
+                    <!-- Password Requirements -->
+                    <div class="password-requirements-box">
+                        <div class="password-requirement-title">
+                            <i class="fas fa-shield-alt" style="color: #28a745;"></i>
+                            Password Requirements:
+                        </div>
+                        <ul class="password-requirement-list">
+                            <li id="length-check" class="password-requirement-item">
+                                <i class="fas fa-circle"></i>
+                                At least 8 characters
+                            </li>
+                            <li id="uppercase-check" class="password-requirement-item">
+                                <i class="fas fa-circle"></i>
+                                At least 1 uppercase letter (A-Z)
+                            </li>
+                            <li id="lowercase-check" class="password-requirement-item">
+                                <i class="fas fa-circle"></i>
+                                At least 1 lowercase letter (a-z)
+                            </li>
+                            <li id="special-check" class="password-requirement-item">
+                                <i class="fas fa-circle"></i>
+                                At least 1 special character (!@#$%^&*)
+                            </li>
+                            <li id="number-check" class="password-requirement-item">
+                                <i class="fas fa-circle"></i>
+                                At least 1 number (0-9)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-4">
+                    <label for="cmpass" class="password-form-label">
+                        <i class="fas fa-check-circle"></i>
+                        Confirm Password
+                    </label>
+                    <input type="password"
+                           name="cmpass"
+                           class="password-form-control"
+                           id="cmpass"
+                           onkeyup="validatePasswordMatch()"
+                           required />
+                    <div class="password-invalid-feedback" id="cmpass-feedback">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Passwords do not match.
+                    </div>
+                    <div class="password-valid-feedback" id="cmpass-valid">
+                        <i class="fas fa-check-circle"></i>
+                        Passwords match.
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" name="submit" class="password-btn-primary" id="submitBtn">
+                    <i class="fas fa-key me-2"></i>
+                    Change Password
+                </button>
+
+            </form>
         </div>
-
-        <div class="mb-4">
-          <label for="cmpass" class="form-label">Confirm Password</label>
-          <input type="password" name="cmpass" class="form-control" id="cmpass" minlength="8" required />
-          <div class="invalid-feedback">New password must be at least 8 characters long.</div>
-        </div>
-
-        <button type="submit" name="submit" class="btn btn-primary">
-          <i class="bi bi-key me-2"></i>Change Password
-        </button>
-
-      </form>
     </div>
-  </div>
+
+    <!-- Password Validation Script -->
+    <script>
+        function validatePassword() {
+            let pwd = document.getElementById('npass').value;
+            let submitBtn = document.getElementById('submitBtn');
+
+            // Check length
+            let lengthValid = pwd.length >= 8;
+            document.getElementById('length-check').innerHTML = lengthValid ?
+                '<i class="fas fa-check-circle text-success"></i> At least 8 characters' :
+                '<i class="fas fa-circle"></i> At least 8 characters';
+            document.getElementById('length-check').classList.toggle('valid', lengthValid);
+
+            // Check uppercase
+            let uppercaseValid = /[A-Z]/.test(pwd);
+            document.getElementById('uppercase-check').innerHTML = uppercaseValid ?
+                '<i class="fas fa-check-circle text-success"></i> At least 1 uppercase letter (A-Z)' :
+                '<i class="fas fa-circle"></i> At least 1 uppercase letter (A-Z)';
+            document.getElementById('uppercase-check').classList.toggle('valid', uppercaseValid);
+
+            // Check lowercase
+            let lowercaseValid = /[a-z]/.test(pwd);
+            document.getElementById('lowercase-check').innerHTML = lowercaseValid ?
+                '<i class="fas fa-check-circle text-success"></i> At least 1 lowercase letter (a-z)' :
+                '<i class="fas fa-circle"></i> At least 1 lowercase letter (a-z)';
+            document.getElementById('lowercase-check').classList.toggle('valid', lowercaseValid);
+
+            // Check special character
+            let specialValid = /[!@#$%^&*]/.test(pwd);
+            document.getElementById('special-check').innerHTML = specialValid ?
+                '<i class="fas fa-check-circle text-success"></i> At least 1 special character (!@#$%^&*)' :
+                '<i class="fas fa-circle"></i> At least 1 special character (!@#$%^&*)';
+            document.getElementById('special-check').classList.toggle('valid', specialValid);
+
+            // Check number
+            let numberValid = /[0-9]/.test(pwd);
+            document.getElementById('number-check').innerHTML = numberValid ?
+                '<i class="fas fa-check-circle text-success"></i> At least 1 number (0-9)' :
+                '<i class="fas fa-circle"></i> At least 1 number (0-9)';
+            document.getElementById('number-check').classList.toggle('valid', numberValid);
+
+            // Calculate strength
+            let strength = 0;
+            if (lengthValid) strength++;
+            if (uppercaseValid) strength++;
+            if (lowercaseValid) strength++;
+            if (specialValid) strength++;
+            if (numberValid) strength++;
+
+            let strengthBar = document.getElementById('strengthBar');
+            strengthBar.className = 'strength-bar-fill';
+
+            if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 3) {
+                strengthBar.classList.add('strength-fair');
+            } else if (strength <= 4) {
+                strengthBar.classList.add('strength-good');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+
+            // Update npass validation class
+            let npassInput = document.getElementById('npass');
+            let npassFeedback = document.getElementById('npass-feedback');
+
+            if (pwd.length > 0) {
+                if (lengthValid && uppercaseValid && lowercaseValid && specialValid && numberValid) {
+                    npassInput.classList.add('is-valid');
+                    npassInput.classList.remove('is-invalid');
+                    npassFeedback.style.display = 'none';
+                } else {
+                    npassInput.classList.add('is-invalid');
+                    npassInput.classList.remove('is-valid');
+                    npassFeedback.style.display = 'flex';
+                }
+            } else {
+                npassInput.classList.remove('is-valid', 'is-invalid');
+                npassFeedback.style.display = 'none';
+            }
+
+            // Check password match
+            validatePasswordMatch();
+        }
+
+        function validatePasswordMatch() {
+            let pwd = document.getElementById('npass').value;
+            let cpwd = document.getElementById('cmpass').value;
+            let cmpassInput = document.getElementById('cmpass');
+            let cmpassFeedback = document.getElementById('cmpass-feedback');
+            let cmpassValid = document.getElementById('cmpass-valid');
+            let submitBtn = document.getElementById('submitBtn');
+
+            if (cpwd.length > 0) {
+                if (pwd === cpwd) {
+                    cmpassInput.classList.add('is-valid');
+                    cmpassInput.classList.remove('is-invalid');
+                    cmpassFeedback.style.display = 'none';
+                    cmpassValid.style.display = 'flex';
+                } else {
+                    cmpassInput.classList.add('is-invalid');
+                    cmpassInput.classList.remove('is-valid');
+                    cmpassFeedback.style.display = 'flex';
+                    cmpassValid.style.display = 'none';
+                }
+            } else {
+                cmpassInput.classList.remove('is-valid', 'is-invalid');
+                cmpassFeedback.style.display = 'none';
+                cmpassValid.style.display = 'none';
+            }
+
+            // Enable/disable submit button based on all validations
+            let pwdValid = pwd.length >= 8 && /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) && /[!@#$%^&*]/.test(pwd) && /[0-9]/.test(pwd);
+            let matchValid = pwd === cpwd && cpwd.length > 0;
+
+            submitBtn.disabled = !(pwdValid && matchValid);
+        }
+
+        // Form submission validation
+        document.getElementById('changePwdForm').addEventListener('submit', function(e) {
+            let pwd = document.getElementById('npass').value;
+            let cpwd = document.getElementById('cmpass').value;
+
+            let pwdValid = pwd.length >= 8 && /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) && /[!@#$%^&*]/.test(pwd) && /[0-9]/.test(pwd);
+            let matchValid = pwd === cpwd && cpwd.length > 0;
+
+            if (!pwdValid) {
+                e.preventDefault();
+                alert('❌ Password must meet all requirements:\n• At least 8 characters\n• At least 1 uppercase letter\n• At least 1 lowercase letter\n• At least 1 special character (!@#$%^&*)\n• At least 1 number');
+                return false;
+            }
+
+            if (!matchValid) {
+                e.preventDefault();
+                alert('❌ Passwords do not match!');
+                return false;
+            }
+
+            return true;
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
 </body>
 </html>
 {% endblock %}

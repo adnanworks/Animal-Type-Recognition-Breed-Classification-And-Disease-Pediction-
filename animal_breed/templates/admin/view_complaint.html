@@ -1,12 +1,459 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#{% for i in messages %}#}
+{##}
+{#        {{ i }}#}
+{##}
+{#{% endfor %}#}
+{#<table border="1" width="200" class="table table-striped" id="ab">#}
+{#    <tr>#}
+{#        <th>Username</th>#}
+{#        <th>Complaint</th>#}
+{#        <th>Date</th>#}
+{#        <th>Reply</th>#}
+{#    </tr>#}
+{##}
+{#    {% for i in data %}#}
+{#    <tr>#}
+{#        <td>{{ i.USER.name }}</td>#}
+{#        <td>{{ i.complaint }}</td>#}
+{#        <td>{{ i.date }}</td>#}
+{#        <td>#}
+{#            {% if i.reply == 'pending' %}#}
+{#                <a href="/myapp/admin_compl_reply_get/{{ i.id }}#ab" class="reply-btn">Send Reply</a>#}
+{#            {% else %}#}
+{#                <div class="reply-text">{{ i.reply }}</div>#}
+{#            {% endif %}#}
+{#        </td>#}
+{#    </tr>#}
+{#    {% endfor %}#}
+{#</table>#}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>User Complaints</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        #ab {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        #ab thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        #ab th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #ab td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #ab tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-badge i {
+            color: #28a745;
+            font-size: 16px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .complaint-text {
+            max-width: 300px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #28a745;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .reply-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .reply-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .reply-btn i {
+            font-size: 12px;
+        }
+
+        .reply-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+
+        .reply-text i {
+            color: #28a745;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        /* Preserve anchor hash functionality */
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 15px;
+            }
+
+            #ab th, #ab td {
+                white-space: nowrap;
+            }
+
+            .complaint-text {
+                max-width: 200px;
+            }
+
+            .reply-btn {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid px-4">
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-comment-dots fa-lg"></i>
+            User Complaints Management
+        </div>
+
+        <!-- Messages - Only design changed, functionality same -->
+        <div class="alert-messages">
+            {% for i in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle fa-lg"></i>
+                    <div>{{ i }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Stats Badge -->
+        <div class="stats-badge">
+            <i class="fas fa-flag"></i>
+            Total Complaints: {{ data|length }}
+        </div>
+
+        <!-- Table - Only design changed, no functionality changes -->
+        <div class="table-container">
+            <table id="ab">
+                <thead>
+                    <tr>
+                        <th width="15%">
+                            <i class="fas fa-user me-1" style="color: #28a745;"></i>
+                            Username
+                        </th>
+                        <th width="35%">
+                            <i class="fas fa-exclamation-triangle me-1" style="color: #28a745;"></i>
+                            Complaint
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            Date
+                        </th>
+                        <th width="20%">
+                            <i class="fas fa-reply me-1" style="color: #28a745;"></i>
+                            Reply
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>
+                            <div class="user-badge">
+                                <i class="fas fa-user-circle fa-lg"></i>
+                                <span class="user-name">{{ i.USER.name }}</span>
+                            </div>
+{#                            <div class="status-pending">#}
+{#                                <i class="fas fa-clock"></i>#}
+{#                                User ID: {{ i.USER.id }}#}
+{#                            </div>#}
+                        </td>
+                        <td>
+                            <div class="complaint-text">
+                                <i class="fas fa-quote-left" style="color: #28a745; font-size: 12px; opacity: 0.7;"></i>
+                                {{ i.complaint }}
+                                <i class="fas fa-quote-right" style="color: #28a745; font-size: 12px; opacity: 0.7; margin-left: 4px;"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="date-badge">
+                                <i class="fas fa-calendar-day"></i>
+                                {{ i.date }}
+                            </span>
+                        </td>
+                        <td>
+                            <!-- EXACT SAME LINK - NO CHANGES TO HREF OR ANCHOR -->
+                            {% if i.reply == 'pending' %}
+                                <a href="/myapp/admin_compl_reply_get/{{ i.id }}#ab" class="reply-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Send Reply
+                                </a>
+                            {% else %}
+                                <span class="reply-text">
+                                    <i class="fas fa-check-circle"></i>
+                                    {{ i.reply }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fas fa-comment-slash"></i>
+                            <p>No Complaints Found</p>
+                            <span class="stats-badge" style="background: #e8f5e9;">
+                                <i class="fas fa-info-circle"></i>
+                                All complaints are resolved
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                    <div>
+                        <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                        <span class="text-muted">
+                            {% with pending=data|dictsortreversed:"reply" %}
+                                Showing {{ data|length }} complaint{{ data|length|pluralize }}
+                                ({{ data|length }} pending)
+                            {% endwith %}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-muted">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            Last updated: {% now "F j, Y" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Auto-hide alerts -->
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    </script>
 
 </body>
 </html>

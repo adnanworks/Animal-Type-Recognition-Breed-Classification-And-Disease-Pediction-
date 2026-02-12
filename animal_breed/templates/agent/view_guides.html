@@ -1,60 +1,636 @@
+{##}
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#    <!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>View Guides</title>#}
+{##}
+{#</head>#}
+{#<body>#}
+{#{% for i in messages %}#}
+{#    <div class="alert alert-info">{{ i }}</div>#}
+{#{% endfor %}#}
+{#<div class="container">#}
+{#    <h2 id="ab">Guide List</h2>#}
+{##}
+{##}
+{#    <table border="1">#}
+{#        <tr>#}
+{#            <th>Sl No</th>#}
+{#            <th>Photo</th>#}
+{#            <th>Name</th>#}
+{#            <th>Email</th>#}
+{#            <th>Phone</th>#}
+{#            <th>Place</th>#}
+{#            <th>Action</th>#}
+{#        </tr>#}
+{##}
+{#        {% for g in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>#}
+{#                <img src="{{ g.photo.url }}" alt="Guide Photo" height="50px;" width="50px;">#}
+{#            </td>#}
+{#            <td>{{ g.name }}</td>#}
+{#            <td>{{ g.email }}</td>#}
+{#            <td>{{ g.phone }}</td>#}
+{#            <td>{{ g.place }}</td>#}
+{#            <td>#}
+{#                <a href="/myapp/agent_edit_guide/{{ g.id }}" class="btn btn-edit">#}
+{#                    Edit#}
+{#                </a>#}
+{#                <a href="/myapp/agent_delete_guide/{{ g.id }}"#}
+{#                   class="btn btn-delete"#}
+{#                   onclick="return confirm('Are you sure you want to delete this guide?');">#}
+{#                   Delete#}
+{#                </a>#}
+{#            </td>#}
+{#        </tr>#}
+{#        {% empty %}#}
+{#        <tr>#}
+{#            <td colspan="7">No guides found</td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#    </table>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 
 {% extends 'agent/home.html' %}
 {% block body %}
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>View Guides</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY TABLE STYLES - NO HEADER/FOOTER STYLES */
+        .guide-table-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 1200px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        .guide-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+        }
+
+        .guide-table-title {
+            color: #28a745;
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .guide-table-title i {
+            font-size: 28px;
+        }
+
+        .guide-stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        .guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .guide-table thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .guide-table th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .guide-table td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .guide-table tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .guide-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #28a745;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .guide-photo:hover {
+            transform: scale(1.5);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+            cursor: pointer;
+            z-index: 10;
+            position: relative;
+        }
+
+        .guide-name {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .guide-name i {
+            color: #28a745;
+        }
+
+        .guide-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .guide-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .guide-contact-item i {
+            color: #28a745;
+            width: 16px;
+        }
+
+        .guide-email {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        /* Phone number badge with validation indicator */
+        .guide-phone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .guide-phone-badge i {
+            color: #28a745;
+        }
+
+        .guide-phone-invalid {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .guide-phone-invalid i {
+            color: #dc3545;
+        }
+
+        .guide-place-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .guide-place-badge i {
+            color: #28a745;
+        }
+
+        .guide-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .guide-btn-edit {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+            text-decoration: none;
+        }
+
+        .guide-btn-edit:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .guide-btn-delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+            text-decoration: none;
+        }
+
+        .guide-btn-delete:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .guide-empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .guide-empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .guide-empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .guide-add-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .guide-add-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .guide-table-container {
+                padding: 15px;
+                margin: 15px;
+            }
+
+            .guide-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .guide-table-title {
+                font-size: 22px;
+            }
+
+            .guide-table th, .guide-table td {
+                white-space: nowrap;
+            }
+
+            .guide-actions {
+                flex-direction: column;
+            }
+
+            .guide-photo:hover {
+                transform: scale(1.2);
+            }
+        }
+    </style>
 </head>
 <body>
-{% for i in messages %}
-    <div class="alert alert-info">{{ i }}</div>
-{% endfor %}
+
 <div class="container">
-    <h2 id="ab">Guide List</h2>
-
-
-    <table border="1">
-        <tr>
-            <th>Sl No</th>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Place</th>
-            <th>Action</th>
-        </tr>
-
-        {% for g in data %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-                <img src="{{ g.photo.url }}" alt="Guide Photo" height="50px;" width="50px;">
-            </td>
-            <td>{{ g.name }}</td>
-            <td>{{ g.email }}</td>
-            <td>{{ g.phone }}</td>
-            <td>{{ g.place }}</td>
-            <td>
-                <a href="/myapp/agent_edit_guide/{{ g.id }}" class="btn btn-edit">
-                    Edit
-                </a>
-                <a href="/myapp/agent_delete_guide/{{ g.id }}"
-                   class="btn btn-delete"
-                   onclick="return confirm('Are you sure you want to delete this guide?');">
-                   Delete
-                </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7">No guides found</td>
-        </tr>
+    <!-- Messages - Only styled -->
+    <div class="alert-messages">
+        {% for i in messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         {% endfor %}
-    </table>
+    </div>
+
+    <!-- Guide Table Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="guide-table-container">
+        <div class="guide-table-header">
+            <h2 id="ab" class="guide-table-title">
+                <i class="fas fa-users"></i>
+                Guide List
+            </h2>
+            <div class="guide-stats-badge">
+                <i class="fas fa-user-check"></i>
+                Total Guides: {{ data|length }}
+            </div>
+        </div>
+
+        <!-- Add Guide Button -->
+
+
+        <div class="guide-table-wrapper">
+            <table class="guide-table">
+                <thead>
+                    <tr>
+                        <th width="8%">
+                            <i class="fas fa-hashtag" style="color: #28a745;"></i>
+                            Sl No
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-camera" style="color: #28a745;"></i>
+                            Photo
+                        </th>
+                        <th width="18%">
+                            <i class="fas fa-user" style="color: #28a745;"></i>
+                            Name
+                        </th>
+                        <th width="20%">
+                            <i class="fas fa-envelope" style="color: #28a745;"></i>
+                            Email
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-phone-alt" style="color: #28a745;"></i>
+                            Phone
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-map-marker-alt" style="color: #28a745;"></i>
+                            Place
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-cog" style="color: #28a745;"></i>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for g in data %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <img src="{{ g.photo.url }}" alt="Guide Photo" class="guide-photo" onclick="enlargeImage(this)">
+                        </td>
+                        <td>
+                            <span class="guide-name">
+                                <i class="fas fa-user-circle"></i>
+                                {{ g.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="guide-contact">
+                                <span class="guide-contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    {{ g.email }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            {% with phone=g.phone|stringformat:"s" %}
+                                {% if phone|length == 10 and phone|first|stringformat:"s" in "6789" %}
+                                    <span class="guide-phone-badge">
+                                        <i class="fas fa-check-circle"></i>
+                                        {{ g.phone }}
+                                    </span>
+                                {% else %}
+                                    <span class="guide-phone-badge guide-phone-invalid">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ g.phone }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            <span class="guide-place-badge">
+                                <i class="fas fa-map-pin"></i>
+                                {{ g.place }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="guide-actions">
+                                <!-- EXACT SAME LINKS - NO CHANGES -->
+                                <a href="/myapp/agent_edit_guide/{{ g.id }}#ab" class="guide-btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+                                </a>
+                                <a href="/myapp/agent_delete_guide/{{ g.id }}"
+                                   class="guide-btn-delete"
+                                   onclick="return confirmDelete('{{ g.name }}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="guide-empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            <p>No guides found</p>
+                            <a href="/myapp/agent_add_guide/" class="guide-add-btn" style="display: inline-flex;">
+                                <i class="fas fa-plus-circle"></i>
+                                Add Your First Guide
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    <span style="color: #6c757d; font-size: 14px;">Showing {{ data|length }} guide{{ data|length|pluralize }}</span>
+                </div>
+                <div>
+                    <span style="color: #6c757d; font-size: 14px;">
+                        <i class="fas fa-calendar-alt" style="color: #28a745; margin-right: 5px;"></i>
+                        Last updated: {% now "F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
+<!-- JavaScript for Image Enlargement and Delete Confirmation -->
+<script>
+    // Image enlargement function
+    function enlargeImage(img) {
+        var modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '9999';
+        modal.style.cursor = 'pointer';
+
+        var enlargedImg = document.createElement('img');
+        enlargedImg.src = img.src;
+        enlargedImg.style.maxWidth = '90%';
+        enlargedImg.style.maxHeight = '90%';
+        enlargedImg.style.borderRadius = '15px';
+        enlargedImg.style.border = '5px solid #28a745';
+        enlargedImg.style.boxShadow = '0 10px 40px rgba(0,0,0,0.3)';
+
+        modal.appendChild(enlargedImg);
+        modal.onclick = function() {
+            document.body.removeChild(modal);
+        };
+
+        document.body.appendChild(modal);
+    }
+
+    // Sweet delete confirmation
+    function confirmDelete(guideName) {
+        return confirm('⚠️ Are you sure you want to delete ' + guideName + '?\nThis action cannot be undone.');
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

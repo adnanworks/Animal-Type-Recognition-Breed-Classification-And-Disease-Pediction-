@@ -1,10 +1,416 @@
+
+{% extends 'agent/home.html' %}
+{% block body %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>View Ratings & Reviews</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .ratings-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            border: none;
+        }
+
+        thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-badge i {
+            color: #28a745;
+        }
+
+        .place-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .place-badge i {
+            color: #28a745;
+        }
+
+        .stars-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 50px;
+            width: fit-content;
+        }
+
+        .star-filled {
+            color: #ffc107;
+            font-size: 16px;
+        }
+
+        .star-empty {
+            color: #e9ecef;
+            font-size: 16px;
+        }
+
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .review-text {
+            max-width: 350px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+            position: relative;
+        }
+
+        .review-text i {
+            color: #28a745;
+            opacity: 0.5;
+            margin-right: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .average-rating {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .ratings-container {
+                padding: 15px;
+            }
+
+            th, td {
+                white-space: nowrap;
+            }
+
+            .review-text {
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid px-4">
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-star-half-alt fa-lg"></i>
+            Ratings & Reviews Management
+        </div>
+
+        <!-- Messages - Only design changed, functionality same -->
+        <div class="alert-messages">
+            {% for i in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle fa-lg"></i>
+                    <div>{{ i }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Stats Badges -->
+
+        <!-- Ratings Table - Only design changed, no functionality changes -->
+        <div class="ratings-container">
+            <h2 style="color: #28a745; font-size: 24px; font-weight: 600; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #e9ecef; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-star" style="color: #28a745;"></i>
+                User Ratings & Reviews
+            </h2>
+
+            <div class="table-container">
+                <table id="ab">
+                    <thead>
+                        <tr>
+                            <th width="8%">
+                                <i class="fas fa-hashtag me-1" style="color: #28a745;"></i>
+                                Sl no
+                            </th>
+                            <th width="20%">
+                                <i class="fas fa-user me-1" style="color: #28a745;"></i>
+                                User Name
+                            </th>
+                            <th width="20%">
+                                <i class="fas fa-map-marker-alt me-1" style="color: #28a745;"></i>
+                                Place Name
+                            </th>
+                            <th width="17%">
+                                <i class="fas fa-star me-1" style="color: #28a745;"></i>
+                                Rating
+                            </th>
+                            <th width="35%">
+                                <i class="fas fa-comment me-1" style="color: #28a745;"></i>
+                                Review
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for i in data %}
+                        <tr>
+                            <td>
+                                <span class="fw-bold">{{ forloop.counter }}</span>
+                            </td>
+                            <td>
+                                <span class="user-badge">
+                                    <i class="fas fa-user-circle fa-lg"></i>
+                                    {{ i.USER.name }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="place-badge">
+                                    <i class="fas fa-tree fa-lg"></i>
+                                    {{ i.PLACE.place_name }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="stars-container">
+                                        <!-- EXACT SAME STAR LOGIC - NO CHANGES -->
+                                        {% for star in "12345" %}
+                                            {% if forloop.counter <= i.rating %}
+                                                <span class="star-filled">&#9733;</span>
+                                            {% else %}
+                                                <span class="star-empty">&#9733;</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="rating-badge">
+                                        {{ i.rating }}/5
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="review-text">
+                                    <i class="fas fa-quote-left"></i>
+                                    {{ i.review }}
+                                    <i class="fas fa-quote-right" style="margin-left: 4px;"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-star-slash"></i>
+                                <p>No Ratings Found</p>
+                                <span class="stats-badge" style="background: #e8f5e9;">
+                                    <i class="fas fa-info-circle"></i>
+                                    Be the first to rate and review
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                    <div>
+                        <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                        <span class="text-muted">Showing {{ data|length }} rating{{ data|length|pluralize }}</span>
+                    </div>
+                    <div>
+                        <span class="text-muted">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            Last updated: {% now "F j, Y" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Auto-hide alerts -->
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    </script>
 
 </body>
 </html>
+
+{% endblock %}

@@ -1,3 +1,48 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Edit Guide</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#<div class="container">#}
+{#    <h2 id="ab">Edit Guide</h2>#}
+{##}
+{#    <form method="post" action="/myapp/agent_edit_guide_post/" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{##}
+{#        <input type="hidden" name="id" value="{{ data.id }}">#}
+{##}
+{#        <label>Name</label>#}
+{#        <input type="text" name="name" value="{{ data.name }}" required>#}
+{##}
+{#        <label>Email</label>#}
+{#        <input type="email" name="email" value="{{ data.email }}" required>#}
+{##}
+{#        <label>Phone</label>#}
+{#        <input type="number" name="phone" value="{{ data.phone }}" required>#}
+{##}
+{#        <label>Place</label>#}
+{#        <input type="text" name="place" value="{{ data.place }}" required>#}
+{##}
+{#        <label>Current Photo</label>#}
+{#        <img src="{{ data.photo.url }}" alt="Guide Photo" width="50px;" height="50px;">#}
+{##}
+{#        <label>Change Photo</label>#}
+{#        <input type="file" name="photo">#}
+{##}
+{#        <button type="submit">Update Guide</button>#}
+{#    </form>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
@@ -5,38 +50,538 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Guide</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .edit-guide-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 700px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .edit-guide-card-header {
+            background: linear-gradient(135deg, #28a745, #218838);
+            padding: 25px 30px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .edit-guide-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .edit-guide-card-title {
+            color: white;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .edit-guide-card-title i {
+            font-size: 30px;
+        }
+
+        .edit-guide-card-body {
+            padding: 35px 30px;
+        }
+
+        .edit-guide-form-group {
+            margin-bottom: 22px;
+        }
+
+        .edit-guide-form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-guide-form-label i {
+            color: #28a745;
+            width: 18px;
+        }
+
+        .edit-guide-form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: #fff;
+        }
+
+        .edit-guide-form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .edit-guide-form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .edit-guide-form-control.is-valid {
+            border-color: #28a745;
+            background-image: none;
+        }
+
+        .edit-guide-form-control:read-only {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #495057;
+        }
+
+        .edit-guide-form-control::placeholder {
+            color: #adb5bd;
+            font-style: italic;
+        }
+
+        /* Current photo section */
+        .edit-guide-current-photo {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-left: 4px solid #28a745;
+        }
+
+        .edit-guide-photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #28a745;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .edit-guide-photo-info {
+            flex: 1;
+        }
+
+        .edit-guide-photo-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-guide-photo-title i {
+            color: #28a745;
+        }
+
+        .edit-guide-photo-hint {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* File input styling */
+        .edit-guide-file-input {
+            border: 2px dashed #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .edit-guide-file-input:hover {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+
+        .edit-guide-file-input::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-guide-file-input::-webkit-file-upload-button:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-1px);
+        }
+
+        /* Phone validation */
+        .edit-guide-phone-validation {
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-guide-phone-valid {
+            color: #28a745;
+        }
+
+        .edit-guide-phone-invalid {
+            color: #dc3545;
+        }
+
+        .edit-guide-form-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-guide-form-hint i {
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        /* Buttons */
+        .edit-guide-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .edit-guide-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .edit-guide-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .edit-guide-btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .edit-guide-btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .edit-guide-button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        /* Remove spinner from number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @media (max-width: 768px) {
+            .edit-guide-card {
+                margin: 15px;
+            }
+
+            .edit-guide-card-header {
+                padding: 20px;
+            }
+
+            .edit-guide-card-body {
+                padding: 25px 20px;
+            }
+
+            .edit-guide-card-title {
+                font-size: 22px;
+            }
+
+            .edit-guide-current-photo {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .edit-guide-button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Edit Guide</h2>
+    <!-- Edit Guide Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="edit-guide-card">
+        <div class="edit-guide-card-header">
+            <h2 id="ab" class="edit-guide-card-title">
+                <i class="fas fa-user-edit"></i>
+                Edit Guide
+            </h2>
+        </div>
 
-    <form method="post" action="/myapp/agent_edit_guide_post/" enctype="multipart/form-data">
-        {% csrf_token %}
+        <div class="edit-guide-card-body">
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, ENCTYPE, FIELD NAMES -->
+            <form method="post" action="/myapp/agent_edit_guide_post/" enctype="multipart/form-data" id="editGuideForm" onsubmit="return validateForm()">
+                {% csrf_token %}
 
-        <input type="hidden" name="id" value="{{ data.id }}">
+                <!-- Hidden ID Field - EXACT SAME -->
+                <input type="hidden" name="id" value="{{ data.id }}">
 
-        <label>Name</label>
-        <input type="text" name="name" value="{{ data.name }}" required>
+                <!-- Name Field -->
+                <div class="edit-guide-form-group">
+                    <label class="edit-guide-form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input type="text"
+                           name="name"
+                           class="edit-guide-form-control"
+                           value="{{ data.name }}"
+                           placeholder="Enter guide's full name"
+                           required>
+                    <div class="edit-guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Enter first and last name
+                    </div>
+                </div>
 
-        <label>Email</label>
-        <input type="email" name="email" value="{{ data.email }}" required>
+                <!-- Email Field -->
+                <div class="edit-guide-form-group">
+                    <label class="edit-guide-form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email"
+                           name="email"
+                           class="edit-guide-form-control"
+                           value="{{ data.email }}"
+                           placeholder="guide@example.com"
+                           required>
+                    <div class="edit-guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Valid email address for communication
+                    </div>
+                </div>
 
-        <label>Phone</label>
-        <input type="number" name="phone" value="{{ data.phone }}" required>
+                <!-- Phone Field with Validation -->
+                <div class="edit-guide-form-group">
+                    <label class="edit-guide-form-label">
+                        <i class="fas fa-phone-alt"></i>
+                        Phone Number
+                    </label>
+                    <input type="tel"
+                           name="phone"
+                           class="edit-guide-form-control"
+                           id="editGuidePhone"
+                           value="{{ data.phone }}"
+                           placeholder="Enter 10 digit mobile number"
+                           onkeyup="validatePhone()"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+                           required>
+                    <div class="edit-guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Must start with 6, 7, 8, or 9 and be exactly 10 digits
+                    </div>
+                    <div id="editGuidePhoneValidation" class="edit-guide-phone-validation"></div>
+                </div>
 
-        <label>Place</label>
-        <input type="text" name="place" value="{{ data.place }}" required>
+                <!-- Place Field -->
+                <div class="edit-guide-form-group">
+                    <label class="edit-guide-form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Place / Location
+                    </label>
+                    <input type="text"
+                           name="place"
+                           class="edit-guide-form-control"
+                           value="{{ data.place }}"
+                           placeholder="Enter city or location"
+                           required>
+                    <div class="edit-guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Current location/address of guide
+                    </div>
+                </div>
 
-        <label>Current Photo</label>
-        <img src="{{ data.photo.url }}" alt="Guide Photo" width="50px;" height="50px;">
+                <!-- Current Photo Section -->
+                <div class="edit-guide-current-photo">
+                    <img src="{{ data.photo.url }}" alt="Guide Photo" class="edit-guide-photo-preview">
+                    <div class="edit-guide-photo-info">
+                        <div class="edit-guide-photo-title">
+                            <i class="fas fa-camera"></i>
+                            Current Photo
+                        </div>
+                        <div class="edit-guide-photo-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Existing profile photo
+                        </div>
+                    </div>
+                </div>
 
-        <label>Change Photo</label>
-        <input type="file" name="photo">
+                <!-- Change Photo Field -->
+                <div class="edit-guide-form-group">
+                    <label class="edit-guide-form-label">
+                        <i class="fas fa-camera"></i>
+                        Change Photo (Optional)
+                    </label>
+                    <input type="file"
+                           name="photo"
+                           class="edit-guide-file-input"
+                           accept="image/*">
+                    <div class="edit-guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Leave empty to keep current photo. Accepted formats: JPG, PNG, GIF (Max 5MB)
+                    </div>
+                </div>
 
-        <button type="submit">Update Guide</button>
-    </form>
+                <!-- Button Group -->
+                <div class="edit-guide-button-group">
+                    <button type="submit" class="edit-guide-btn-primary" id="editGuideSubmitBtn">
+                        <i class="fas fa-save"></i>
+                        Update Guide
+                    </button>
+                    <a href="/myapp/agent_view_guides/" class="edit-guide-btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Phone Validation Script -->
+<script>
+    function validatePhone() {
+        let phone = document.getElementById('editGuidePhone').value;
+        let phoneValidation = document.getElementById('editGuidePhoneValidation');
+        let submitBtn = document.getElementById('editGuideSubmitBtn');
+        let phoneInput = document.getElementById('editGuidePhone');
+
+        // Phone pattern: starts with 6-9 and exactly 10 digits
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        if (phone.length > 0) {
+            if (phonePattern.test(phone)) {
+                // Valid phone
+                phoneValidation.innerHTML = '<span class="edit-guide-phone-valid"><i class="fas fa-check-circle"></i> ✓ Valid phone number</span>';
+                phoneInput.classList.add('is-valid');
+                phoneInput.classList.remove('is-invalid');
+                submitBtn.disabled = false;
+            } else {
+                // Invalid phone - provide specific error message
+                phoneInput.classList.add('is-invalid');
+                phoneInput.classList.remove('is-valid');
+                submitBtn.disabled = true;
+
+                if (phone.length !== 10) {
+                    phoneValidation.innerHTML = '<span class="edit-guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Phone must be exactly 10 digits</span>';
+                } else if (phone.length === 10 && !/^[6-9]/.test(phone)) {
+                    phoneValidation.innerHTML = '<span class="edit-guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Phone must start with 6, 7, 8, or 9</span>';
+                } else {
+                    phoneValidation.innerHTML = '<span class="edit-guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Invalid phone number</span>';
+                }
+            }
+        } else {
+            // No input
+            phoneValidation.innerHTML = '<span class="edit-guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Phone number is required</span>';
+            phoneInput.classList.add('is-invalid');
+            phoneInput.classList.remove('is-valid');
+            submitBtn.disabled = true;
+        }
+    }
+
+    // Form validation before submit
+    function validateForm() {
+        let phone = document.getElementById('editGuidePhone').value;
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        // Validate phone
+        if (!phonePattern.test(phone)) {
+            alert('❌ Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Auto-format phone input
+    document.getElementById('editGuidePhone').addEventListener('input', function(e) {
+        // Remove any non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
+        // Limit to 10 digits
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10);
+        }
+    });
+
+    // Initial validation check on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        validatePhone();
+    });
+</script>
 
 </body>
 </html>

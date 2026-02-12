@@ -1,3 +1,45 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Add Guide</title>#}
+{##}
+{#</head>#}
+{#<body>#}
+{##}
+{#<div class="container">#}
+{#    <h2>Add Guide</h2>#}
+{##}
+{#    <form method="post" action="/myapp/add_guide_post/" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{##}
+{##}
+{#        <label>Name</label>#}
+{#        <input type="text" name="name" required>#}
+{##}
+{#        <label>Email</label>#}
+{#        <input type="email" name="email" required>#}
+{##}
+{#        <label>Phone</label>#}
+{#        <input type="number" name="phone" required>#}
+{##}
+{#        <label>Place</label>#}
+{#        <input type="text" name="place" required>#}
+{##}
+{#        <label>Photo</label>#}
+{#        <input type="file" name="photo" required>#}
+{##}
+{#        <button type="submit">Add Guide</button>#}
+{#    </form>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
@@ -6,34 +48,447 @@
     <meta charset="UTF-8">
     <title>Add Guide</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .guide-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 700px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .guide-card-header {
+            background: linear-gradient(135deg, #28a745, #218838);
+            padding: 25px 30px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .guide-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .guide-card-title {
+            color: white;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guide-card-title i {
+            font-size: 30px;
+        }
+
+        .guide-card-body {
+            padding: 35px 30px;
+        }
+
+        .guide-form-group {
+            margin-bottom: 22px;
+        }
+
+        .guide-form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-form-label i {
+            color: #28a745;
+            width: 18px;
+        }
+
+        .guide-form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: #fff;
+        }
+
+        .guide-form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .guide-form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .guide-form-control.is-valid {
+            border-color: #28a745;
+            background-image: none;
+        }
+
+        .guide-form-control::placeholder {
+            color: #adb5bd;
+            font-style: italic;
+        }
+
+        /* File input styling */
+        .guide-file-input {
+            border: 2px dashed #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guide-file-input:hover {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+
+        .guide-file-input::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guide-file-input::-webkit-file-upload-button:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-1px);
+        }
+
+        .guide-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .guide-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .guide-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .guide-btn-primary i {
+            font-size: 16px;
+        }
+
+        /* Phone validation feedback */
+        .guide-form-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .guide-form-hint i {
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        .guide-phone-validation {
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .guide-phone-valid {
+            color: #28a745;
+        }
+
+        .guide-phone-invalid {
+            color: #dc3545;
+        }
+
+        .guide-validation-feedback {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-validation-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 3px solid #28a745;
+        }
+
+        .guide-validation-error {
+            background: #f8d7da;
+            color: #dc3545;
+            border-left: 3px solid #dc3545;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .guide-card {
+                margin: 15px;
+            }
+
+            .guide-card-header {
+                padding: 20px;
+            }
+
+            .guide-card-body {
+                padding: 25px 20px;
+            }
+
+            .guide-card-title {
+                font-size: 22px;
+            }
+
+            .guide-file-input::-webkit-file-upload-button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+
+        /* Remove spinner from number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Add Guide</h2>
+    <!-- Add Guide Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="guide-card">
+        <div class="guide-card-header">
+            <h2 class="guide-card-title">
+                <i class="fas fa-user-plus"></i>
+                Add New Guide
+            </h2>
+        </div>
 
-    <form method="post" action="/myapp/add_guide_post/" enctype="multipart/form-data">
-        {% csrf_token %}
+        <div class="guide-card-body" id="ab">
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, ENCTYPE -->
+            <form method="post" action="/myapp/add_guide_post/" enctype="multipart/form-data" id="guideForm" onsubmit="return validateForm()">
+                {% csrf_token %}
 
+                <!-- Name Field -->
+                <div class="guide-form-group">
+                    <label class="guide-form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input type="text"
+                           name="name"
+                           class="guide-form-control"
+                           placeholder="Enter guide's full name"
+                           required>
+                    <div class="guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Enter first and last name
+                    </div>
+                </div>
 
-        <label>Name</label>
-        <input type="text" name="name" required>
+                <!-- Email Field -->
+                <div class="guide-form-group">
+                    <label class="guide-form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email"
+                           name="email"
+                           class="guide-form-control"
+                           placeholder="guide@example.com"
+                           required>
+                    <div class="guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Valid email address for communication
+                    </div>
+                </div>
 
-        <label>Email</label>
-        <input type="email" name="email" required>
+                <!-- Phone Field with Validation -->
+                <div class="guide-form-group">
+                    <label class="guide-form-label">
+                        <i class="fas fa-phone-alt"></i>
+                        Phone Number
+                    </label>
+                    <input type="tel"
+                           name="phone"
+                           class="guide-form-control"
+                           id="guidePhone"
+                           placeholder="Enter 10 digit mobile number"
+                           onkeyup="validatePhone()"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+                           required>
+                    <div class="guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Must start with 6, 7, 8, or 9 and be exactly 10 digits
+                    </div>
+                    <div id="guidePhoneValidation" class="guide-phone-validation"></div>
+                </div>
 
-        <label>Phone</label>
-        <input type="number" name="phone" required>
+                <!-- Place Field -->
+                <div class="guide-form-group">
+                    <label class="guide-form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Place / Location
+                    </label>
+                    <input type="text"
+                           name="place"
+                           class="guide-form-control"
+                           placeholder="Enter city or location"
+                           required>
+                    <div class="guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Current location/address of guide
+                    </div>
+                </div>
 
-        <label>Place</label>
-        <input type="text" name="place" required>
+                <!-- Photo Field -->
+                <div class="guide-form-group">
+                    <label class="guide-form-label">
+                        <i class="fas fa-camera"></i>
+                        Profile Photo
+                    </label>
+                    <input type="file"
+                           name="photo"
+                           class="guide-form-control guide-file-input"
+                           accept="image/*"
+                           required>
+                    <div class="guide-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Accepted formats: JPG, PNG, GIF (Max 5MB)
+                    </div>
+                </div>
 
-        <label>Photo</label>
-        <input type="file" name="photo" required>
+                <!-- Submit Button -->
+                <button type="submit" class="guide-btn-primary" id="guideSubmitBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Guide
+                </button>
 
-        <button type="submit">Add Guide</button>
-    </form>
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Phone Validation Script -->
+<script>
+    function validatePhone() {
+        let phone = document.getElementById('guidePhone').value;
+        let phoneValidation = document.getElementById('guidePhoneValidation');
+        let submitBtn = document.getElementById('guideSubmitBtn');
+        let phoneInput = document.getElementById('guidePhone');
+
+        // Phone pattern: starts with 6-9 and exactly 10 digits
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        if (phone.length > 0) {
+            if (phonePattern.test(phone)) {
+                // Valid phone
+                phoneValidation.innerHTML = '<span class="guide-phone-valid"><i class="fas fa-check-circle"></i> ✓ Valid phone number</span>';
+                phoneInput.classList.add('is-valid');
+                phoneInput.classList.remove('is-invalid');
+                submitBtn.disabled = false;
+            } else {
+                // Invalid phone - provide specific error message
+                phoneInput.classList.add('is-invalid');
+                phoneInput.classList.remove('is-valid');
+                submitBtn.disabled = true;
+
+                if (phone.length !== 10) {
+                    phoneValidation.innerHTML = '<span class="guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Phone must be exactly 10 digits</span>';
+                } else if (phone.length === 10 && !/^[6-9]/.test(phone)) {
+                    phoneValidation.innerHTML = '<span class="guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Phone must start with 6, 7, 8, or 9</span>';
+                } else {
+                    phoneValidation.innerHTML = '<span class="guide-phone-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Invalid phone number</span>';
+                }
+            }
+        } else {
+            // No input
+            phoneValidation.innerHTML = '';
+            phoneInput.classList.remove('is-valid', 'is-invalid');
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Form validation before submit
+    function validateForm() {
+        let phone = document.getElementById('guidePhone').value;
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        // Validate phone
+        if (!phonePattern.test(phone)) {
+            alert('❌ Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Auto-format phone input
+    document.getElementById('guidePhone').addEventListener('input', function(e) {
+        // Remove any non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
+        // Limit to 10 digits
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10);
+        }
+    });
+
+    // Initial validation check
+    document.addEventListener('DOMContentLoaded', function() {
+        validatePhone();
+    });
+</script>
 
 </body>
 </html>

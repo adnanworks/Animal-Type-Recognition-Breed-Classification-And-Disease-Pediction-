@@ -1,45 +1,574 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#    <title>View Assigned Packages</title>#}
+{#</head>#}
+{#<body>#}
+{#{% for i in messages %}#}
+{#    <div class="alert alert-info">{{ i }}</div>#}
+{#{% endfor %}#}
+{#<h2>Assigned Packages</h2>#}
+{##}
+{#<table id="ab">#}
+{#    <tr>#}
+{#        <th>Sl No</th>#}
+{#        <th>Guide Name</th>#}
+{#        <th>Assigned Date</th>#}
+{#        <th>Phone</th>#}
+{#        <th>Package Name</th>#}
+{#        <th>Place</th>#}
+{#        <th>Status</th>#}
+{#        <th>Delete</th>#}
+{#    </tr>#}
+{##}
+{#    {% for i in data %}#}
+{#    <tr>#}
+{#        <td>{{ forloop.counter }}</td>#}
+{#        <td>{{ i.GUIDE.name }}</td>#}
+{#        <td>{{ i.date }}</td>#}
+{#        <td>{{ i.GUIDE.phone }}</td>#}
+{#        <td>{{ i.PACKAGE.title }}</td>#}
+{#        <td>{{ i.PACKAGE.PLACE.place_name }}</td>#}
+{#        <td>{{ i.status }}</td>#}
+{#        <td><a href="/myapp/delete_assign_package/{{ i.id }}">Delete</a></td>#}
+{#    </tr>#}
+{#    {% empty %}#}
+{#    <tr>#}
+{#        <td colspan="5">No Assignments Found</td>#}
+{#    </tr>#}
+{#    {% endfor %}#}
+{#</table>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>View Assigned Packages</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY TABLE STYLES - NO HEADER/FOOTER STYLES */
+        .assigned-table-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 1300px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        .assigned-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+        }
+
+        .assigned-table-title {
+            color: #28a745;
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .assigned-table-title i {
+            font-size: 28px;
+        }
+
+        .assigned-stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assigned-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        #ab {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        #ab thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        #ab th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #ab td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #ab tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .guide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .guide-badge i {
+            color: #28a745;
+        }
+
+        .package-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .package-badge i {
+            color: #28a745;
+        }
+
+        .place-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .place-badge i {
+            color: #28a745;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .date-badge i {
+            color: #28a745;
+        }
+
+        .phone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .phone-badge i {
+            color: #28a745;
+        }
+
+        .phone-badge-invalid {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .phone-badge-invalid i {
+            color: #dc3545;
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .assigned-btn-delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+            text-decoration: none;
+        }
+
+        .assigned-btn-delete:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .assigned-empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .assigned-empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .assigned-empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .assigned-table-container {
+                padding: 15px;
+                margin: 15px;
+            }
+
+            .assigned-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .assigned-table-title {
+                font-size: 22px;
+            }
+
+            #ab th, #ab td {
+                white-space: nowrap;
+            }
+        }
+    </style>
 </head>
 <body>
-{% for i in messages %}
-    <div class="alert alert-info">{{ i }}</div>
-{% endfor %}
-<h2>Assigned Packages</h2>
 
-<table id="ab">
-    <tr>
-        <th>Sl No</th>
-        <th>Guide Name</th>
-        <th>Assigned Date</th>
-        <th>Phone</th>
-        <th>Package Name</th>
-        <th>Place</th>
-        <th>Status</th>
-        <th>Delete</th>
-    </tr>
+<div class="container">
+    <!-- Messages - Only styled -->
+    <div class="alert-messages">
+        {% for i in messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
 
-    {% for i in data %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ i.GUIDE.name }}</td>
-        <td>{{ i.date }}</td>
-        <td>{{ i.GUIDE.phone }}</td>
-        <td>{{ i.PACKAGE.title }}</td>
-        <td>{{ i.PACKAGE.PLACE.place_name }}</td>
-        <td>{{ i.status }}</td>
-        <td><a href="/myapp/delete_assign_package/{{ i.id }}">Delete</a></td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5">No Assignments Found</td>
-    </tr>
-    {% endfor %}
-</table>
+    <!-- Assigned Packages Table Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="assigned-table-container">
+        <div class="assigned-table-header">
+            <h2 id="ab" class="assigned-table-title">
+                <i class="fas fa-clipboard-list"></i>
+                Assigned Packages
+            </h2>
+            <div class="assigned-stats-badge">
+                <i class="fas fa-user-check"></i>
+                Total Assignments: {{ data|length }}
+            </div>
+        </div>
+
+        <div class="assigned-table-wrapper">
+            <table id="ab">
+                <thead>
+                    <tr>
+                        <th width="5%">
+                            <i class="fas fa-hashtag" style="color: #28a745;"></i>
+                            Sl No
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-user" style="color: #28a745;"></i>
+                            Guide Name
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-calendar-alt" style="color: #28a745;"></i>
+                            Assigned Date
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-phone-alt" style="color: #28a745;"></i>
+                            Phone
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-box" style="color: #28a745;"></i>
+                            Package Name
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-map-marker-alt" style="color: #28a745;"></i>
+                            Place
+                        </th>
+                        <th width="10%">
+                            <i class="fas fa-circle" style="color: #28a745;"></i>
+                            Status
+                        </th>
+                        <th width="9%">
+                            <i class="fas fa-trash" style="color: #28a745;"></i>
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <span class="guide-badge">
+                                <i class="fas fa-user-circle"></i>
+                                {{ i.GUIDE.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="date-badge">
+                                <i class="fas fa-calendar-day"></i>
+                                {{ i.date }}
+                            </span>
+                        </td>
+                        <td>
+                            {% with phone=i.GUIDE.phone|stringformat:"s" %}
+                                {% if phone|length == 10 and phone|first|stringformat:"s" in "6789" %}
+                                    <span class="phone-badge">
+                                        <i class="fas fa-check-circle"></i>
+                                        {{ i.GUIDE.phone }}
+                                    </span>
+                                {% else %}
+                                    <span class="phone-badge phone-badge-invalid">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ i.GUIDE.phone }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            <span class="package-badge">
+                                <i class="fas fa-box"></i>
+                                {{ i.PACKAGE.title }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="place-badge">
+                                <i class="fas fa-map-pin"></i>
+                                {{ i.PACKAGE.PLACE.place_name }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if i.status == 'Active' or i.status == 'active' %}
+                                <span class="status-badge status-active">
+                                    <i class="fas fa-check-circle"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% elif i.status == 'Pending' or i.status == 'pending' %}
+                                <span class="status-badge status-pending">
+                                    <i class="fas fa-clock"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% elif i.status == 'Completed' or i.status == 'completed' %}
+                                <span class="status-badge status-completed">
+                                    <i class="fas fa-flag-checkered"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% elif i.status == 'Cancelled' or i.status == 'cancelled' %}
+                                <span class="status-badge status-cancelled">
+                                    <i class="fas fa-ban"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% else %}
+                                <span class="status-badge" style="background: #6c757d; color: white;">
+                                    <i class="fas fa-circle"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- EXACT SAME LINK - NO CHANGES -->
+                            <a href="/myapp/delete_assign_package/{{ i.id }}"
+                               class="assigned-btn-delete"
+                               onclick="return confirmDelete('{{ i.GUIDE.name }}', '{{ i.PACKAGE.title }}')">
+                                <i class="fas fa-trash-alt"></i>
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="assigned-empty-state">
+                            <i class="fas fa-clipboard"></i>
+                            <p>No Assignments Found</p>
+                            <span style="color: #6c757d; font-size: 14px;">
+                                <i class="fas fa-info-circle" style="color: #28a745;"></i>
+                                No guides have been assigned to packages yet
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    <span style="color: #6c757d; font-size: 14px;">Showing {{ data|length }} assignment{{ data|length|pluralize }}</span>
+                </div>
+                <div>
+                    <span style="color: #6c757d; font-size: 14px;">
+                        <i class="fas fa-calendar-alt" style="color: #28a745; margin-right: 5px;"></i>
+                        Last updated: {% now "F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Script -->
+<script>
+    function confirmDelete(guideName, packageTitle) {
+        return confirm('⚠️ Are you sure you want to remove ' + guideName + ' from "' + packageTitle + '"?\nThis action cannot be undone.');
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

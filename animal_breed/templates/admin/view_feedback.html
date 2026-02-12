@@ -1,12 +1,421 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#{% for i in messages %}#}
+{#  {{ i }}#}
+{#{% endfor %}#}
+{#  <div class="feedback-card">#}
+{#    <h2>View Feedbacks</h2>#}
+{#    <table id="ab" class="table table-striped table-bordered align-middle mb-3">#}
+{#      <thead>#}
+{#        <tr>#}
+{#          <th>Sl no</th>#}
+{#          <th>Feedback</th>#}
+{#          <th>User Name</th>#}
+{#          <th>Date</th>#}
+{#        </tr>#}
+{#      </thead>#}
+{#      <tbody>#}
+{#        {% for i in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>{{ i.feedback }}</td>#}
+{#            <td>{{ i.USER.name }}</td>#}
+{#            <td>{{ i.date }}</td>#}
+{##}
+{#        </tr>#}
+{#        {% empty %}#}
+{#        <tr><td colspan="4" class="text-center">No Feedback available.</td></tr>#}
+{#        {% endfor %}#}
+{#      </tbody>#}
+{#    </table>#}
+{#  </div>#}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}}#}
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>View Feedbacks</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px 0;
+        }
+
+        .feedback-card h2 {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-card h2 i {
+            color: #28a745;
+            font-size: 26px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        #ab {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            border: none;
+        }
+
+        #ab thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        #ab th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #ab td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #ab tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-text {
+            max-width: 400px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+            position: relative;
+        }
+
+        .feedback-text i {
+            color: #28a745;
+            opacity: 0.5;
+            margin-right: 5px;
+        }
+
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-badge i {
+            color: #28a745;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .date-badge i {
+            color: #28a745;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feedback-quote {
+            display: inline;
+            color: #28a745;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .feedback-card {
+                padding: 15px;
+            }
+
+            .feedback-card h2 {
+                font-size: 20px;
+            }
+
+            #ab th, #ab td {
+                white-space: nowrap;
+            }
+
+            .feedback-text {
+                max-width: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid px-4">
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-star fa-lg"></i>
+            User Feedbacks
+        </div>
+
+        <!-- Messages - Only design changed, functionality same -->
+        <div class="alert-messages">
+            {% for i in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle fa-lg"></i>
+                    <div>{{ i }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Stats Badge -->
+        <div class="stats-badge">
+            <i class="fas fa-comment-dots"></i>
+            Total Feedbacks: {{ data|length }}
+        </div>
+
+        <!-- Feedback Card - Only design changed, no functionality changes -->
+        <div class="feedback-card">
+            <h2>
+                <i class="fas fa-comments"></i>
+                View Feedbacks
+            </h2>
+
+            <div class="table-container">
+                <table id="ab" class="table">
+                    <thead>
+                        <tr>
+                            <th width="8%">
+                                <i class="fas fa-hashtag me-1" style="color: #28a745;"></i>
+                                Sl no
+                            </th>
+                            <th width="52%">
+                                <i class="fas fa-comment me-1" style="color: #28a745;"></i>
+                                Feedback
+                            </th>
+                            <th width="20%">
+                                <i class="fas fa-user me-1" style="color: #28a745;"></i>
+                                User Name
+                            </th>
+                            <th width="20%">
+                                <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                                Date
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in data %}
+                        <tr>
+                            <td>
+                                <span class="fw-bold">{{ forloop.counter }}</span>
+                            </td>
+                            <td>
+                                <div class="feedback-text">
+                                    <i class="fas fa-quote-left feedback-quote"></i>
+                                    {{ i.feedback }}
+                                    <i class="fas fa-quote-right feedback-quote" style="margin-left: 4px;"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="user-badge">
+                                    <i class="fas fa-user-circle"></i>
+                                    {{ i.USER.name }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="date-badge">
+                                    <i class="fas fa-calendar-day"></i>
+                                    {{ i.date }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <i class="fas fa-comment-slash"></i>
+                                <p>No Feedback available</p>
+                                <span class="stats-badge" style="background: #e8f5e9;">
+                                    <i class="fas fa-info-circle"></i>
+                                    Be the first to receive feedback
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                    <div>
+                        <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                        <span class="text-muted">Showing {{ data|length }} feedback{{ data|length|pluralize }}</span>
+                    </div>
+                    <div>
+                        <span class="text-muted">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            Last updated: {% now "F j, Y" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Auto-hide alerts -->
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    </script>
 
 </body>
 </html>

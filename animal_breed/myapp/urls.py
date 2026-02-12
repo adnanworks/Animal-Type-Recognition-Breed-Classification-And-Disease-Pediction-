@@ -19,7 +19,8 @@ from django.urls import path
 from myapp import views
 
 urlpatterns = [
-    path('index/',views.index),
+    path('',views.index),
+    path('logouts/',views.logouts),
     path('login_get/',views.login_get),
     path('login_post/',views.login_post),
     path('admin_home/',views.admin_home),
@@ -37,6 +38,10 @@ urlpatterns = [
     path('admin_view_complaints/',views.admin_view_complaints),
     path('admin_view_feedback/',views.admin_view_feedback),
     path('admin_view_Place_rating/',views.admin_view_Place_rating),
+
+    path('admin_view_complaints/',views.admin_view_complaints),
+    path('admin_compl_reply_get/<id>',views.admin_compl_reply_get),
+    path('admin_compl_reply_post/',views.admin_compl_reply_post),
 
     path('changepwd_admin_get/',views.changepwd_admin_get),
     path('changepwd_admin_post/',views.changepwd_admin_post),
@@ -72,6 +77,8 @@ urlpatterns = [
     path('agentview_assign_package/',views.agentview_assign_package),
     path('delete_assign_package/<id>',views.delete_assign_package),
 
+    path('agent_view_Place_rating/',views.agent_view_Place_rating),
+
     # =================GUIDE
 
     path('flutter_login/',views.flutter_login),
@@ -79,6 +86,10 @@ urlpatterns = [
     path('guide_view_assipackages/',views.guide_view_assipackages),
     path('guide_accept_package/',views.guide_accept_package),
     path('guide_reject_package/',views.guide_reject_package),
+    path('guide_view_bookings/',views.guide_view_bookings),
+    path('guide_reject_booking/',views.guide_reject_booking),
+    path('guide_accept_booking/',views.guide_accept_booking),
+    path('guide_changepassword/',views.guide_changepassword),
 
     # =================USER
 
@@ -86,6 +97,20 @@ urlpatterns = [
     path('user_viewprofile/',views.user_viewprofile),
     path('user_profileviewforedit/',views.user_profileviewforedit),
     path('user_editprofile/',views.user_editprofile),
+
     path('user_viewplaces/',views.user_viewplaces),
+    path('user_viewpackages/',views.user_viewpackages),
+    path('user_book_package/',views.user_book_package),
+    path('user_view_bookings/',views.user_view_bookings),
+    path('user_view_guide/',views.user_view_guide),
+    path('user_add_rating/',views.user_add_rating),
+
+    path('user_sendComplaint/',views.user_sendComplaint),
+    path('user_viewcomplaint/',views.user_viewcomplaint),
+    path('user_addFeedback/',views.user_addFeedback),
+    path('user_changepassword/',views.user_changepassword),
+
+    path('species_prediction/',views.species_prediction),
+
 
 ]

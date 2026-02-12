@@ -1,3 +1,43 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Add Package</title>#}
+{##}
+{#</head>#}
+{#<body>#}
+{##}
+{#<div class="container">#}
+{#    <h2 id="ab">Add Package</h2>#}
+{##}
+{#    <form method="post" action="/myapp/agent_add_package_post/">#}
+{##}
+{#        {% csrf_token %}#}
+{#        <input type="hidden" name="id" value="{{ i.id }}">#}
+{##}
+{#        <label>Title</label>#}
+{#        <input type="text" name="title" required><br>#}
+{##}
+{#        <label>Description</label>#}
+{#<input type="text" name="Description" required><br>#}
+{#        <label>Price</label>#}
+{#        <input type="number" name="price" required><br>#}
+{##}
+{#        <label>Days</label>#}
+{#        <input type="number" name="days"  required><br>#}
+{##}
+{#        <button type="submit">Add Package</button>#}
+{#    </form>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
@@ -6,31 +46,508 @@
     <meta charset="UTF-8">
     <title>Add Package</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .package-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 700px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .package-card-header {
+            background: linear-gradient(135deg, #28a745, #218838);
+            padding: 25px 30px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .package-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .package-card-title {
+            color: white;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .package-card-title i {
+            font-size: 30px;
+        }
+
+        .package-card-body {
+            padding: 35px 30px;
+        }
+
+        .package-form-group {
+            margin-bottom: 22px;
+        }
+
+        .package-form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .package-form-label i {
+            color: #28a745;
+            width: 18px;
+        }
+
+        .package-form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: #fff;
+        }
+
+        .package-form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .package-form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .package-form-control.is-valid {
+            border-color: #28a745;
+            background-image: none;
+        }
+
+        .package-form-control::placeholder {
+            color: #adb5bd;
+            font-style: italic;
+        }
+
+        textarea.package-form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .package-form-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .package-form-hint i {
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        .package-validation-feedback {
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .package-validation-valid {
+            color: #28a745;
+        }
+
+        .package-validation-invalid {
+            color: #dc3545;
+        }
+
+        .package-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            margin-top: 15px;
+        }
+
+        .package-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .package-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .package-btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .package-btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .package-button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        /* Remove spinner from number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @media (max-width: 768px) {
+            .package-card {
+                margin: 15px;
+            }
+
+            .package-card-header {
+                padding: 20px;
+            }
+
+            .package-card-body {
+                padding: 25px 20px;
+            }
+
+            .package-card-title {
+                font-size: 22px;
+            }
+
+            .package-button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 id="ab">Add Package</h2>
+    <!-- Add Package Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="package-card">
+        <div class="package-card-header">
+            <h2 id="ab" class="package-card-title">
+                <i class="fas fa-plus-circle"></i>
+                Add New Package
+            </h2>
+        </div>
 
-    <form method="post" action="/myapp/agent_add_package_post/">
+        <div class="package-card-body">
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, FIELD NAMES -->
+            <form method="post" action="/myapp/agent_add_package_post/" id="addPackageForm" onsubmit="return validateForm()">
+                {% csrf_token %}
 
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{ i.id }}">
+                <!-- Hidden ID Field - EXACT SAME -->
+                <input type="hidden" name="id" value="{{ i.id }}">
 
-        <label>Title</label>
-        <input type="text" name="title" required><br>
+                <!-- Title Field -->
+                <div class="package-form-group">
+                    <label class="package-form-label">
+                        <i class="fas fa-tag"></i>
+                        Package Title
+                    </label>
+                    <input type="text"
+                           name="title"
+                           class="package-form-control"
+                           id="packageTitle"
+                           placeholder="e.g., Wildlife Safari, Bird Watching Tour"
+                           onkeyup="validateTitle()"
+                           required>
+                    <div class="package-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Enter a descriptive title for the package
+                    </div>
+                    <div id="titleValidation" class="package-validation-feedback"></div>
+                </div>
 
-        <label>Description</label>
-<input type="text" name="Description" required><br>
-        <label>Price</label>
-        <input type="number" name="price" required><br>
+                <!-- Description Field - FIXED: name="Description" to match your form -->
+                <div class="package-form-group">
+                    <label class="package-form-label">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </label>
+                    <textarea name="Description"
+                              class="package-form-control"
+                              id="packageDescription"
+                              placeholder="Provide detailed information about the package, including activities, highlights, inclusions, etc."
+                              onkeyup="validateDescription()"
+                              required></textarea>
+                    <div class="package-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Minimum 10 characters for detailed description
+                    </div>
+                    <div id="descriptionValidation" class="package-validation-feedback"></div>
+                    <div id="descriptionCharCount" style="font-size: 11px; color: #6c757d; text-align: right; margin-top: 5px;">
+                        <i class="fas fa-text-height" style="color: #28a745;"></i>
+                        <span id="charCount">0</span> characters
+                    </div>
+                </div>
 
-        <label>Days</label>
-        <input type="number" name="days"  required><br>
+                <!-- Price Field -->
+                <div class="package-form-group">
+                    <label class="package-form-label">
+                        <i class="fas fa-rupee-sign"></i>
+                        Price (₹)
+                    </label>
+                    <input type="number"
+                           name="price"
+                           class="package-form-control"
+                           id="packagePrice"
+                           placeholder="e.g., 5000"
+                           min="1"
+                           step="1"
+                           onkeyup="validatePrice()"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           required>
+                    <div class="package-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Enter price in Indian Rupees (₹)
+                    </div>
+                    <div id="priceValidation" class="package-validation-feedback"></div>
+                </div>
 
-        <button type="submit">Add Package</button>
-    </form>
+                <!-- Days Field -->
+                <div class="package-form-group">
+                    <label class="package-form-label">
+                        <i class="fas fa-sun"></i>
+                        Duration (Days)
+                    </label>
+                    <input type="number"
+                           name="days"
+                           class="package-form-control"
+                           id="packageDays"
+                           placeholder="e.g., 3"
+                           min="1"
+                           max="30"
+                           step="1"
+                           onkeyup="validateDays()"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           required>
+                    <div class="package-form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Number of days (1-30)
+                    </div>
+                    <div id="daysValidation" class="package-validation-feedback"></div>
+                </div>
+
+                <!-- Button Group -->
+                <div class="package-button-group">
+                    <button type="submit" class="package-btn-primary" id="submitBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Package
+                    </button>
+                    <a href="/myapp/agent_view_places/#ab" class="package-btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Validation Script -->
+<script>
+    // Title validation
+    function validateTitle() {
+        let title = document.getElementById('packageTitle').value;
+        let titleValidation = document.getElementById('titleValidation');
+        let titleInput = document.getElementById('packageTitle');
+
+        if (title.length > 0) {
+            if (title.length >= 3) {
+                titleValidation.innerHTML = '<span class="package-validation-valid"><i class="fas fa-check-circle"></i> ✓ Valid title</span>';
+                titleInput.classList.add('is-valid');
+                titleInput.classList.remove('is-invalid');
+            } else {
+                titleValidation.innerHTML = '<span class="package-validation-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Title must be at least 3 characters</span>';
+                titleInput.classList.add('is-invalid');
+                titleInput.classList.remove('is-valid');
+            }
+        } else {
+            titleValidation.innerHTML = '';
+            titleInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Description validation with character count
+    function validateDescription() {
+        let desc = document.getElementById('packageDescription').value;
+        let descValidation = document.getElementById('descriptionValidation');
+        let descInput = document.getElementById('packageDescription');
+        let charCount = document.getElementById('charCount');
+
+        charCount.textContent = desc.length;
+
+        if (desc.length > 0) {
+            if (desc.length >= 10) {
+                descValidation.innerHTML = '<span class="package-validation-valid"><i class="fas fa-check-circle"></i> ✓ Good description</span>';
+                descInput.classList.add('is-valid');
+                descInput.classList.remove('is-invalid');
+            } else {
+                descValidation.innerHTML = '<span class="package-validation-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Description must be at least 20 characters</span>';
+                descInput.classList.add('is-invalid');
+                descInput.classList.remove('is-valid');
+            }
+        } else {
+            descValidation.innerHTML = '';
+            descInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Price validation
+    function validatePrice() {
+        let price = document.getElementById('packagePrice').value;
+        let priceValidation = document.getElementById('priceValidation');
+        let priceInput = document.getElementById('packagePrice');
+
+        if (price.length > 0) {
+            let priceNum = parseInt(price);
+            if (priceNum >= 50 && priceNum <= 100000) {
+                priceValidation.innerHTML = '<span class="package-validation-valid"><i class="fas fa-check-circle"></i> ✓ Valid price range</span>';
+                priceInput.classList.add('is-valid');
+                priceInput.classList.remove('is-invalid');
+            } else {
+                priceValidation.innerHTML = '<span class="package-validation-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Price must be between ₹500 and ₹100,000</span>';
+                priceInput.classList.add('is-invalid');
+                priceInput.classList.remove('is-valid');
+            }
+        } else {
+            priceValidation.innerHTML = '';
+            priceInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Days validation
+    function validateDays() {
+        let days = document.getElementById('packageDays').value;
+        let daysValidation = document.getElementById('daysValidation');
+        let daysInput = document.getElementById('packageDays');
+
+        if (days.length > 0) {
+            let daysNum = parseInt(days);
+            if (daysNum >= 1 && daysNum <= 30) {
+                daysValidation.innerHTML = '<span class="package-validation-valid"><i class="fas fa-check-circle"></i> ✓ Valid duration</span>';
+                daysInput.classList.add('is-valid');
+                daysInput.classList.remove('is-invalid');
+            } else {
+                daysValidation.innerHTML = '<span class="package-validation-invalid"><i class="fas fa-exclamation-circle"></i> ❌ Days must be between 1 and 30</span>';
+                daysInput.classList.add('is-invalid');
+                daysInput.classList.remove('is-valid');
+            }
+        } else {
+            daysValidation.innerHTML = '';
+            daysInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Form validation before submit
+    function validateForm() {
+        let title = document.getElementById('packageTitle').value;
+        let desc = document.getElementById('packageDescription').value;
+        let price = document.getElementById('packagePrice').value;
+        let days = document.getElementById('packageDays').value;
+        let submitBtn = document.getElementById('submitBtn');
+
+        let titleValid = title.length >= 3;
+        let descValid = desc.length >= 10;
+        let priceValid = price >= 50 && price <= 100000;
+        let daysValid = days >= 1 && days <= 30;
+
+        let allValid = titleValid && descValid && priceValid && daysValid;
+
+        submitBtn.disabled = !allValid;
+
+        return allValid;
+    }
+
+    // Character count on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        validateTitle();
+        validateDescription();
+        validatePrice();
+        validateDays();
+    });
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            }
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

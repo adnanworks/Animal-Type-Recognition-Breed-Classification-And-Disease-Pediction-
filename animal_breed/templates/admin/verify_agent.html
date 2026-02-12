@@ -1,56 +1,446 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<body>#}
+{##}
+{#{% for i in messages %}#}
+{#    {{ i }}#}
+{#{% endfor %}#}
+{##}
+{#<table border="1">#}
+{#    <thead>#}
+{#        <tr>#}
+{#            <th>Sl no</th>#}
+{#            <th>Name</th>#}
+{#            <th>Email</th>#}
+{#            <th>Place</th>#}
+{#            <th>Phone</th>#}
+{#            <th>Photo</th>#}
+{#            <th>Status</th>#}
+{#            <th>Verify</th>#}
+{#        </tr>#}
+{#    </thead>#}
+{##}
+{#    <tbody>#}
+{#        {% for i in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>{{ i.name }}</td>#}
+{#            <td>{{ i.email }}</td>#}
+{#            <td>{{ i.place }}</td>#}
+{#            <td>{{ i.phone }}</td>#}
+{#            <td>#}
+{#                <img src="{{ i.photo.url }}" height="40" width="40" alt="photo">#}
+{#            </td>#}
+{#            <td>{{ i.status }}</td>#}
+{#            <td>#}
+{#                 <form method="post" action="/myapp/admin_verify_agent_post/">#}
+{#                    {% csrf_token %}#}
+{#                    {% if i.status == 'Active' %}#}
+{#                        <button type="submit" name="block" value="{{ i.id }}" class="btn-action reject">Block</button>#}
+{#                    {% elif i.status == 'Blocked' %}#}
+{#                        <button type="submit" name="unblock" value="{{ i.id }}" class="btn-action accept">Unblock</button>#}
+{#                    {% endif %}#}
+{#                </form>#}
+{#            </td>#}
+{#        </tr>#}
+{##}
+{#        {% empty %}#}
+{#        <tr>#}
+{#            <td colspan="8">No Agents Found</td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+{##}
+{#</body>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Agents</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 10px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px 10px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .agent-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #28a745;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+        }
+
+        .status-blocked {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-action {
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-action.accept {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+        }
+
+        .btn-action.accept:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+        }
+
+        .btn-action.reject {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-action.reject:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .contact-item i {
+            color: #28a745;
+            width: 16px;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 15px;
+            }
+
+            th, td {
+                white-space: nowrap;
+            }
+
+            .btn-action {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
 <body>
+    <div class="container-fluid px-4">
 
-{% for i in messages %}
-    {{ i }}
-{% endfor %}
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-user-shield"></i>
+            Agent Verification
+        </div>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Sl no</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Place</th>
-            <th>Phone</th>
-            <th>Photo</th>
-            <th>Status</th>
-            <th>Verify</th>
-        </tr>
-    </thead>
+        <!-- Messages - Only design changed, functionality same -->
+        <div class="alert-messages">
+            {% for i in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <div>{{ i }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
 
-    <tbody>
-        {% for i in data %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ i.name }}</td>
-            <td>{{ i.email }}</td>
-            <td>{{ i.place }}</td>
-            <td>{{ i.phone }}</td>
-            <td>
-                <img src="{{ i.photo.url }}" height="40" width="40" alt="photo">
-            </td>
-            <td>{{ i.status }}</td>
-            <td>
-                 <form method="post" action="/myapp/admin_verify_agent_post/">
-                    {% csrf_token %}
-                    {% if i.status == 'Active' %}
-                        <button type="submit" name="block" value="{{ i.id }}" class="btn-action reject">Block</button>
-                    {% elif i.status == 'Blocked' %}
-                        <button type="submit" name="unblock" value="{{ i.id }}" class="btn-action accept">Unblock</button>
-                    {% endif %}
-                </form>
-            </td>
-        </tr>
+        <!-- Stats Badge -->
+        <div class="stats-badge">
+            <i class="fas fa-users"></i>
+            Total Agents: {{ data|length }}
+        </div>
 
-        {% empty %}
-        <tr>
-            <td colspan="8">No Agents Found</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <!-- Table - Only design changed, no functionality changes -->
+        <div class="table-container">
+            <table id="ab">
+                <thead>
+                    <tr>
+                        <th>Sl no</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Place</th>
+                        <th>Phone</th>
+                        <th>Photo</th>
+                        <th>Status</th>
+                        <th>Verify</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <span class="agent-name">
+                                <i class="fas fa-user-circle me-1" style="color: #28a745;"></i>
+                                {{ i.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                {{ i.email }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ i.place }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-phone-alt"></i>
+                                {{ i.phone }}
+                            </div>
+                        </td>
+                        <td>
+                            <img src="{{ i.photo.url }}" class="agent-photo" alt="photo">
+                        </td>
+                        <td>
+                            {% if i.status == 'Active' %}
+                                <span class="status-badge status-active">
+                                    <i class="fas fa-check-circle"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% elif i.status == 'Blocked' %}
+                                <span class="status-badge status-blocked">
+                                    <i class="fas fa-ban"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% else %}
+                                <span class="status-badge" style="background: #ffc107; color: #212529;">
+                                    <i class="fas fa-clock"></i>
+                                    {{ i.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, NAME, VALUE -->
+                            <form method="post" action="/myapp/admin_verify_agent_post/">
+                                {% csrf_token %}
+                                {% if i.status == 'Active' %}
+                                    <button type="submit" name="block" value="{{ i.id }}" class="btn-action reject">
+                                        <i class="fas fa-ban"></i>
+                                        Block
+                                    </button>
+                                {% elif i.status == 'Blocked' %}
+                                    <button type="submit" name="unblock" value="{{ i.id }}" class="btn-action accept">
+                                        <i class="fas fa-check-circle"></i>
+                                        Unblock
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            <p>No Agents Found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Auto-hide alerts -->
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    </script>
 
 </body>
+</html>
+
 {% endblock %}

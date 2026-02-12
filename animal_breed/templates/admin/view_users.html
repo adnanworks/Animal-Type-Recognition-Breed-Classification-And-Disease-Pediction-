@@ -1,13 +1,463 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<body>#}
+{##}
+{#{% for i in messages %}#}
+{#    {{ i }}#}
+{#{% endfor %}#}
+{##}
+{#<table border="1">#}
+{#    <thead id="ab">#}
+{#        <tr>#}
+{#            <th>Sl no</th>#}
+{#            <th>Name</th>#}
+{#            <th>Email</th>#}
+{#            <th>Place</th>#}
+{#            <th>DOB</th>#}
+{#            <th>Phone</th>#}
+{#            <th>Photo</th>#}
+{#        </tr>#}
+{#    </thead>#}
+{##}
+{#    <tbody>#}
+{#        {% for i in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>{{ i.name }}</td>#}
+{#            <td>{{ i.email }}</td>#}
+{#            <td>{{ i.place }}</td>#}
+{#            <td>{{ i.dob }}</td>#}
+{#            <td>{{ i.phone }}</td>#}
+{#            <td>#}
+{#                <img src="{{ i.photo.url }}" height="40" width="40" alt="photo">#}
+{#            </td>#}
+{#        </tr>#}
+{##}
+{#        {% empty %}#}
+{#        <tr>#}
+{#            <td colspan="8">No Users Found</td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+{##}
+{#</body>#}
+{#{% endblock %}#}
+
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>View Users</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        #ab {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        #ab thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        #ab th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 10px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #ab td {
+            padding: 15px 10px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        #ab tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .user-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #28a745;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .user-photo:hover {
+            transform: scale(1.5);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-name i {
+            color: #28a745;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .contact-item i {
+            color: #28a745;
+            width: 16px;
+        }
+
+        .dob-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 15px;
+            }
+
+            #ab th, #ab td {
+                white-space: nowrap;
+            }
+
+            .user-photo:hover {
+                transform: scale(1.2);
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <div class="container-fluid px-4">
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-users fa-lg"></i>
+            Registered Users
+        </div>
+
+        <!-- Messages - Only design changed, functionality same -->
+        <div class="alert-messages">
+            {% for i in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle fa-lg"></i>
+                    <div>{{ i }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Stats Badge -->
+        <div class="stats-badge">
+            <i class="fas fa-user-check"></i>
+            Total Users: {{ data|length }}
+        </div>
+
+        <!-- Table - Only design changed, no functionality changes -->
+        <div class="table-container">
+            <table id="ab">
+                <thead>
+                    <tr>
+                        <th width="5%">Sl no</th>
+                        <th width="15%">
+                            <i class="fas fa-user me-1" style="color: #28a745;"></i>
+                            Name
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-envelope me-1" style="color: #28a745;"></i>
+                            Email
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-map-marker-alt me-1" style="color: #28a745;"></i>
+                            Place
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            DOB
+                        </th>
+                        <th width="13%">
+                            <i class="fas fa-phone-alt me-1" style="color: #28a745;"></i>
+                            Phone
+                        </th>
+                        <th width="10%">
+                            <i class="fas fa-camera me-1" style="color: #28a745;"></i>
+                            Photo
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <span class="user-name">
+                                <i class="fas fa-user-circle"></i>
+                                {{ i.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                {{ i.email }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ i.place }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="dob-badge">
+                                <i class="fas fa-birthday-cake"></i>
+                                {{ i.dob }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="contact-item">
+                                <i class="fas fa-phone-alt"></i>
+                                {{ i.phone }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-center">
+                                <img src="{{ i.photo.url }}" class="user-photo" alt="{{ i.name }}" title="Click to enlarge">
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            <p>No Users Found</p>
+                            <span class="stats-badge" style="background: #e8f5e9;">
+                                <i class="fas fa-info-circle"></i>
+                                No registered users yet
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                    <div>
+                        <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                        <span class="text-muted">Showing {{ data|length }} user{{ data|length|pluralize }}</span>
+                    </div>
+                    <div>
+                        <span class="text-muted">
+                            <i class="fas fa-calendar-alt me-1" style="color: #28a745;"></i>
+                            Last updated: {% now "F j, Y" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Auto-hide alerts -->
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+
+        // Image click to enlarge
+        document.addEventListener('DOMContentLoaded', function() {
+            var photos = document.querySelectorAll('.user-photo');
+            photos.forEach(function(photo) {
+                photo.addEventListener('click', function() {
+                    var imgSrc = this.src;
+                    var imgAlt = this.alt;
+
+                    var modal = document.createElement('div');
+                    modal.style.position = 'fixed';
+                    modal.style.top = '0';
+                    modal.style.left = '0';
+                    modal.style.width = '100%';
+                    modal.style.height = '100%';
+                    modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    modal.style.display = 'flex';
+                    modal.style.justifyContent = 'center';
+                    modal.style.alignItems = 'center';
+                    modal.style.zIndex = '9999';
+                    modal.style.cursor = 'pointer';
+
+                    var img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = imgAlt;
+                    img.style.maxWidth = '90%';
+                    img.style.maxHeight = '90%';
+                    img.style.borderRadius = '15px';
+                    img.style.border = '5px solid #28a745';
+                    img.style.boxShadow = '0 10px 40px rgba(0,0,0,0.3)';
+
+                    modal.appendChild(img);
+                    modal.onclick = function() {
+                        document.body.removeChild(modal);
+                    };
+
+                    document.body.appendChild(modal);
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
+
 {% endblock %}

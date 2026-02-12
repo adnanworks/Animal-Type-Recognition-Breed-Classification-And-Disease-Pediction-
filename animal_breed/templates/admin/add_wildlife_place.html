@@ -1,3 +1,140 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html>#}
+{#<head>#}
+{#  <title>Add Wildlife Place</title>#}
+{##}
+{#  <!-- Leaflet CSS -->#}
+{#  <link#}
+{#    rel="stylesheet"#}
+{#    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"#}
+{#  />#}
+{##}
+{#  <style>#}
+{#    #map {#}
+{#      height: 350px;#}
+{#      width: 100%;#}
+{#      border-radius: 8px;#}
+{#    }#}
+{#  </style>#}
+{#</head>#}
+{##}
+{#<body>#}
+{#  <div class="form-panel">#}
+{#    <h2 id="ab">Add Wildlife Place</h2>#}
+{##}
+{#    <form method="POST" action="/myapp/add_wildlife_place_post/">#}
+{#      {% csrf_token %}#}
+{##}
+{#      <!-- Place Name -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Place Name</label>#}
+{#        <div class="col-sm-8">#}
+{#          <input type="text" name="place_name" class="form-control" required>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Description -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Description</label>#}
+{#        <div class="col-sm-8">#}
+{#          <textarea name="description" class="form-control" rows="3" required></textarea>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Location -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Location</label>#}
+{#        <div class="col-sm-8">#}
+{#          <input type="text" name="location" class="form-control" required>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Type -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Type</label>#}
+{#        <div class="col-sm-8">#}
+{#          <select name="type" class="form-control" required>#}
+{#            <option value="">-- Select Type --</option>#}
+{#            <option value="Popular">Popular</option>#}
+{#            <option value="Non-Popular">Non-Popular</option>#}
+{#          </select>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Map -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Select Location on Map</label>#}
+{#        <div class="col-sm-8">#}
+{#          <div id="map"></div>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Latitude -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Latitude</label>#}
+{#        <div class="col-sm-8">#}
+{#          <input type="text" name="latitute" id="latitude" class="form-control" readonly required>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Longitude -->#}
+{#      <div class="row mb-3">#}
+{#        <label class="col-sm-4 col-form-label">Longitude</label>#}
+{#        <div class="col-sm-8">#}
+{#          <input type="text" name="longitude" id="longitude" class="form-control" readonly required>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <!-- Submit -->#}
+{#      <div class="row mb-3">#}
+{#        <div class="offset-sm-4 col-sm-8">#}
+{#          <button type="submit" class="btn btn-primary">Add Wildlife Place</button>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#    </form>#}
+{#  </div>#}
+{##}
+{#  <!-- Leaflet JS -->#}
+{#  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>#}
+{##}
+{#  <script>#}
+{#    // Default map location (India)#}
+{#    var map = L.map('map').setView([20.5937, 78.9629], 5);#}
+{##}
+{#    // OpenStreetMap tiles#}
+{#    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {#}
+{#      maxZoom: 19,#}
+{#    }).addTo(map);#}
+{##}
+{#    var marker;#}
+{##}
+{#    // On map click#}
+{#    map.on('click', function (e) {#}
+{#      var lat = e.latlng.lat.toFixed(6);#}
+{#      var lng = e.latlng.lng.toFixed(6);#}
+{##}
+{#      // Set values to input fields#}
+{#      document.getElementById('latitude').value = lat;#}
+{#      document.getElementById('longitude').value = lng;#}
+{##}
+{#      // Add or move marker#}
+{#      if (marker) {#}
+{#        marker.setLatLng(e.latlng);#}
+{#      } else {#}
+{#        marker = L.marker(e.latlng).addTo(map);#}
+{#      }#}
+{#    });#}
+{#  </script>#}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
 <!DOCTYPE html>
@@ -12,85 +149,365 @@
   />
 
   <style>
+    .form-panel {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      margin: 20px auto;
+      max-width: 1000px;
+    }
+
+    #ab {
+      color: #28a745;
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #28a745;
+      position: relative;
+    }
+
+    #ab:after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      background: #28a745;
+    }
+
     #map {
       height: 350px;
       width: 100%;
+      border-radius: 12px;
+      border: 2px solid #e9ecef;
+      box-shadow: 0 3px 10px rgba(40, 167, 69, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    #map:hover {
+      border-color: #28a745;
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+      padding-top: 8px;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+      outline: none;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 30px;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .input-group-text {
+      background: linear-gradient(135deg, #28a745, #218838);
+      color: white;
+      border: none;
+      border-radius: 10px 0 0 10px;
+    }
+
+    .readonly-field {
+      background-color: #f8f9fa;
+      border: 2px solid #e9ecef;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    .readonly-field:focus {
+      background-color: #f8f9fa;
+    }
+
+    .coordinate-box {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 10px;
+      border-left: 4px solid #28a745;
+    }
+
+    .coordinate-label {
+      font-size: 13px;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+
+    .coordinate-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #28a745;
+    }
+
+    .map-instruction {
+      background: #e8f5e9;
+      color: #28a745;
+      padding: 10px 15px;
       border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .map-instruction i {
+      margin-right: 8px;
+      color: #28a745;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2328a745'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 20px;
+      padding-right: 40px;
+    }
+
+    .required-star:after {
+      content: "*";
+      color: #dc3545;
+      margin-left: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .form-panel {
+        padding: 20px;
+        margin: 15px;
+      }
+
+      #ab {
+        font-size: 24px;
+      }
+
+      .col-sm-4, .col-sm-8 {
+        width: 100%;
+      }
+
+      .btn-primary {
+        width: 100%;
+      }
+    }
+
+    /* Animation */
+    .wow {
+      animation-duration: 0.5s;
+      animation-fill-mode: both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fadeIn {
+      animation-name: fadeIn;
     }
   </style>
 </head>
 
 <body>
-  <div class="form-panel">
-    <h2 id="ab">Add Wildlife Place</h2>
+  <div class="form-panel wow fadeIn">
+    <h2 id="ab">
+      <i class="fas fa-tree me-3" style="color: #28a745;"></i>
+      Add Wildlife Place
+    </h2>
 
     <form method="POST" action="/myapp/add_wildlife_place_post/">
       {% csrf_token %}
 
       <!-- Place Name -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Place Name</label>
+      <div class="row mb-4 align-items-center">
+        <label class="col-sm-4 col-form-label form-label required-star">
+          <i class="fas fa-map-marker-alt me-2" style="color: #28a745;"></i>
+          Place Name
+        </label>
         <div class="col-sm-8">
-          <input type="text" name="place_name" class="form-control" required>
+          <input type="text"
+                 name="place_name"
+                 class="form-control"
+                 placeholder="Enter wildlife place name"
+                 required>
+          <small class="text-muted mt-1 d-block">
+            <i class="fas fa-info-circle me-1" style="color: #28a745;"></i>
+            e.g., Jim Corbett National Park, Periyar Wildlife Sanctuary
+          </small>
         </div>
       </div>
 
       <!-- Description -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Description</label>
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label form-label required-star">
+          <i class="fas fa-align-left me-2" style="color: #28a745;"></i>
+          Description
+        </label>
         <div class="col-sm-8">
-          <textarea name="description" class="form-control" rows="3" required></textarea>
+          <textarea name="description"
+                    class="form-control"
+                    rows="4"
+                    placeholder="Provide detailed description about the wildlife place..."
+                    required></textarea>
+          <small class="text-muted mt-1 d-block">
+            <i class="fas fa-info-circle me-1" style="color: #28a745;"></i>
+            Include details about wildlife, best visiting time, attractions, etc.
+          </small>
         </div>
       </div>
 
       <!-- Location -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Location</label>
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label form-label required-star">
+          <i class="fas fa-address-card me-2" style="color: #28a745;"></i>
+          Address
+        </label>
         <div class="col-sm-8">
-          <input type="text" name="location" class="form-control" required>
+          <input type="text"
+                 name="location"
+                 class="form-control"
+                 placeholder="Full address of the wildlife place"
+                 required>
+          <small class="text-muted mt-1 d-block">
+            <i class="fas fa-info-circle me-1" style="color: #28a745;"></i>
+            Street address, city, state, country
+          </small>
         </div>
       </div>
 
       <!-- Type -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Type</label>
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label form-label required-star">
+          <i class="fas fa-tag me-2" style="color: #28a745;"></i>
+          Category
+        </label>
         <div class="col-sm-8">
           <select name="type" class="form-control" required>
-            <option value="">-- Select Type --</option>
-            <option value="Popular">Popular</option>
+            <option value="" disabled selected>-- Select Category --</option>
+            <option value="Popular">
+              <i class="fas fa-star"></i> Popular
+            </option>
             <option value="Non-Popular">Non-Popular</option>
           </select>
+          <small class="text-muted mt-1 d-block">
+            <i class="fas fa-info-circle me-1" style="color: #28a745;"></i>
+            Popular: Well-known tourist destinations
+          </small>
         </div>
       </div>
 
       <!-- Map -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Select Location on Map</label>
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label form-label required-star">
+          <i class="fas fa-map me-2" style="color: #28a745;"></i>
+          Map Location
+        </label>
         <div class="col-sm-8">
+          <div class="map-instruction">
+            <i class="fas fa-hand-pointer"></i>
+            Click on the map to pin the exact location of the wildlife place
+          </div>
           <div id="map"></div>
         </div>
       </div>
 
-      <!-- Latitude -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Latitude</label>
+      <!-- Coordinates -->
+      <div class="row mb-4">
+        <label class="col-sm-4 col-form-label form-label">
+          <i class="fas fa-crosshairs me-2" style="color: #28a745;"></i>
+          Coordinates
+        </label>
         <div class="col-sm-8">
-          <input type="text" name="latitute" id="latitude" class="form-control" readonly required>
+          <div class="coordinate-box">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="coordinate-label">
+                  <i class="fas fa-arrow-up me-1"></i> Latitude
+                </div>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-map-pin"></i>
+                  </span>
+                  <input type="text"
+                         name="latitute"
+                         id="latitude"
+                         class="form-control readonly-field"
+                         placeholder="Click on map"
+                         readonly
+                         required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="coordinate-label">
+                  <i class="fas fa-arrow-right me-1"></i> Longitude
+                </div>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-map-pin"></i>
+                  </span>
+                  <input type="text"
+                         name="longitude"
+                         id="longitude"
+                         class="form-control readonly-field"
+                         placeholder="Click on map"
+                         readonly
+                         required>
+                </div>
+              </div>
+            </div>
+            <small class="text-muted mt-2 d-block">
+              <i class="fas fa-info-circle me-1" style="color: #28a745;"></i>
+              Coordinates are automatically filled when you click on the map
+            </small>
+          </div>
         </div>
       </div>
 
-      <!-- Longitude -->
-      <div class="row mb-3">
-        <label class="col-sm-4 col-form-label">Longitude</label>
-        <div class="col-sm-8">
-          <input type="text" name="longitude" id="longitude" class="form-control" readonly required>
-        </div>
-      </div>
-
-      <!-- Submit -->
+      <!-- Submit Button -->
       <div class="row mb-3">
         <div class="offset-sm-4 col-sm-8">
-          <button type="submit" class="btn btn-primary">Add Wildlife Place</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>
+            Add Wildlife Place
+          </button>
+          <button type="reset" class="btn btn-outline-secondary ms-2">
+            <i class="fas fa-undo me-1"></i>
+            Reset
+          </button>
         </div>
       </div>
 
@@ -100,13 +517,27 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
   <script>
+    // Custom green marker icon
+    var greenIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
     // Default map location (India)
     var map = L.map('map').setView([20.5937, 78.9629], 5);
 
-    // OpenStreetMap tiles
+    // Green-themed tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution: '© OpenStreetMap'
     }).addTo(map);
 
     var marker;
@@ -120,12 +551,39 @@
       document.getElementById('latitude').value = lat;
       document.getElementById('longitude').value = lng;
 
-      // Add or move marker
+      // Add or move marker with green icon
       if (marker) {
         marker.setLatLng(e.latlng);
       } else {
-        marker = L.marker(e.latlng).addTo(map);
+        marker = L.marker(e.latlng, {icon: greenIcon}).addTo(map);
       }
+
+      // Add popup
+      marker.bindPopup(`
+        <b>Selected Location</b><br>
+        Latitude: ${lat}<br>
+        Longitude: ${lng}
+      `).openPopup();
+    });
+
+    // Add scale control
+    L.control.scale().addTo(map);
+
+    // Animation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('.form-panel').classList.add('fadeIn');
+    });
+
+    // Reset form handler
+    document.querySelector('button[type="reset"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelector('form').reset();
+      if (marker) {
+        map.removeLayer(marker);
+        marker = null;
+      }
+      document.getElementById('latitude').value = '';
+      document.getElementById('longitude').value = '';
     });
   </script>
 </body>

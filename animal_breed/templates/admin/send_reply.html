@@ -1,12 +1,378 @@
+{#{% extends 'admin/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#    <form action="/myapp/admin_compl_reply_post/" method="post" id="ab">#}
+{#          <input type="hidden" name="id" value="{{ data.id }}">#}
+{##}
+{#          <!-- Reply Field -->#}
+{#          <div class="mb-3">#}
+{#            <label class="form-label"></label>#}
+{#            <input type="text" class="form-control" name="reply" value="{{ z.complrply }}"#}
+{#                   placeholder="Enter your response to the complaint...">#}
+{#          </div>#}
+{##}
+{#          <!-- Send Button -->#}
+{#          <div class="d-flex justify-content-end">#}
+{#            <button type="submit" class="btn btn-primary">Send</button>#}
+{#          </div>#}
+{##}
+{#        </form>#}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'admin/home.html' %}
 {% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Reply to Complaint</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .page-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        #ab {
+            width: 100%;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .form-header-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .form-header-title {
+            flex: 1;
+        }
+
+        .form-header-title h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-header-title p {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .complaint-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #28a745;
+        }
+
+        .complaint-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .complaint-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .complaint-info-item i {
+            color: #28a745;
+            width: 20px;
+            text-align: center;
+        }
+
+        .complaint-info-item strong {
+            color: #2c3e50;
+            margin-right: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .form-label i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #adb5bd;
+            font-style: italic;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-primary i {
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .character-count {
+            text-align: right;
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        .character-count i {
+            color: #28a745;
+            margin-right: 5px;
+        }
+
+        /* Preserve anchor functionality */
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .form-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid px-4">
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <i class="fas fa-reply-all fa-lg"></i>
+            Reply to Complaint
+        </div>
+
+        <!-- Form Container - Only design changed, functionality same -->
+        <div class="form-container">
+
+            <!-- Form Header -->
+            <div class="form-header">
+                <div class="form-header-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <div class="form-header-title">
+                    <h3>
+                        <i class="fas fa-paper-plane" style="color: #28a745; margin-right: 8px;"></i>
+                        Compose Your Response
+                    </h3>
+                    <p>Please provide a detailed response to address the user's complaint</p>
+                </div>
+            </div>
+
+            <!-- Complaint Summary (Static Info) -->
+
+
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, NAME, ID -->
+            <form action="/myapp/admin_compl_reply_post/" method="post" id="ab">
+                {% csrf_token %}
+
+                <!-- Hidden ID Field - EXACT SAME -->
+                <input type="hidden" name="id" value="{{ data.id }}">
+
+                <!-- Reply Field - Only design changed, name and value same -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-reply"></i>
+                        Your Response
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           name="reply"
+                           value="{{ z.complrply }}"
+                           placeholder="e.g., Thank you for bringing this to our attention. We have resolved the issue..."
+                           autofocus>
+                    <div class="character-count">
+                        <i class="fas fa-info-circle"></i>
+                        Please be professional and specific in your response
+                    </div>
+                </div>
+
+                <!-- Buttons - Only design changed, type and value same -->
+                <div class="btn-container">
+                    <a href="/myapp/admin_view_complaint/" class="btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Reply
+                    </button>
+                </div>
+
+            </form>
+
+            <!-- Response Tips -->
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                    <i class="fas fa-lightbulb" style="color: #28a745; font-size: 18px;"></i>
+                    <div style="font-size: 13px; color: #6c757d;">
+                        <strong style="color: #2c3e50;">Response Tips:</strong><br>
+                        • Acknowledge the user's concern<br>
+                        • Provide a clear explanation or solution<br>
+                        • Be empathetic and professional<br>
+                        • Include any actions taken or next steps
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auto-focus on reply field -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var replyField = document.querySelector('input[name="reply"]');
+            if (replyField) {
+                replyField.focus();
+            }
+        });
+    </script>
 
 </body>
 </html>

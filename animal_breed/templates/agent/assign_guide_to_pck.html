@@ -1,43 +1,543 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title></title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#</body>#}
+{#</html><!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Assign Guide</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#<div class="container">#}
+{#    <h2 id="ab">Assign Guide</h2>#}
+{##}
+{#    <form method="post" action="/myapp/agent_assign_guide_post/">#}
+{#        {% csrf_token %}#}
+{##}
+{#        <input type="hidden" name="pid" value="{{ data.id }}">#}
+{##}
+{#        <label>Select Guide</label>#}
+{#        <select name="guide_id" required>#}
+{#            <option value="">-- Select Guide --</option>#}
+{#            {% for g in guides %}#}
+{#                <option value="{{ g.id }}">#}
+{#                    {{ g.name }} - {{ g.place }}#}
+{#                </option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+{##}
+{#        <button type="submit">Assign Guide</button>#}
+{#    </form>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+    <title>Assign Guide to Package</title>
 
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Assign Guide</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .assign-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 650px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .assign-card-header {
+            background: linear-gradient(135deg, #28a745, #218838);
+            padding: 25px 30px;
+            border-bottom: none;
+            position: relative;
+        }
+
+        .assign-card-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .assign-card-title {
+            color: white;
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .assign-card-title i {
+            font-size: 30px;
+        }
+
+        .assign-card-body {
+            padding: 35px 30px;
+        }
+
+        .assign-package-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #28a745;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .assign-package-icon {
+            width: 50px;
+            height: 50px;
+            background: #e8f5e9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 24px;
+        }
+
+        .assign-package-details {
+            flex: 1;
+        }
+
+        .assign-package-title {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assign-package-title i {
+            color: #28a745;
+        }
+
+        .assign-package-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .assign-package-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .assign-package-meta-item i {
+            color: #28a745;
+            width: 16px;
+        }
+
+        .assign-form-group {
+            margin-bottom: 25px;
+        }
+
+        .assign-form-label {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assign-form-label i {
+            color: #28a745;
+            width: 18px;
+        }
+
+        .assign-form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2328a745'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+
+        .assign-form-select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .assign-form-select option {
+            padding: 12px;
+        }
+
+        .assign-guide-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 5px;
+        }
+
+        .assign-guide-option {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid transparent;
+        }
+
+        .assign-guide-option:hover {
+            background: #f8f9fa;
+            border-color: #28a745;
+        }
+
+        .assign-guide-option input[type="radio"] {
+            accent-color: #28a745;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .assign-guide-avatar {
+            width: 40px;
+            height: 40px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 18px;
+        }
+
+        .assign-guide-info {
+            flex: 1;
+        }
+
+        .assign-guide-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .assign-guide-name i {
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        .assign-guide-place {
+            font-size: 13px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 3px;
+        }
+
+        .assign-guide-place i {
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        .assign-no-guides {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            color: #6c757d;
+        }
+
+        .assign-no-guides i {
+            font-size: 40px;
+            color: #28a745;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .assign-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            margin-top: 15px;
+        }
+
+        .assign-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .assign-btn-primary i {
+            font-size: 16px;
+        }
+
+        .assign-btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .assign-btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .assign-button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .assign-form-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .assign-form-hint i {
+            color: #28a745;
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .assign-card {
+                margin: 15px;
+            }
+
+            .assign-card-header {
+                padding: 20px;
+            }
+
+            .assign-card-body {
+                padding: 25px 20px;
+            }
+
+            .assign-card-title {
+                font-size: 22px;
+            }
+
+            .assign-package-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .assign-package-meta {
+                justify-content: center;
+            }
+
+            .assign-button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 id="ab">Assign Guide</h2>
+    <!-- Assign Guide Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="assign-card">
+        <div class="assign-card-header">
+            <h2 id="ab" class="assign-card-title">
+                <i class="fas fa-user-plus"></i>
+                Assign Guide to Package
+            </h2>
+        </div>
 
-    <form method="post" action="/myapp/agent_assign_guide_post/">
-        {% csrf_token %}
+        <div class="assign-card-body">
+            <!-- Package Information Display -->
+            <div class="assign-package-info">
+                <div class="assign-package-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="assign-package-details">
+                    <div class="assign-package-title">
+                        <i class="fas fa-tag"></i>
+                        {{ data.title }}
+                    </div>
 
-        <input type="hidden" name="pid" value="{{ data.id }}">
+                </div>
+            </div>
 
-        <label>Select Guide</label>
-        <select name="guide_id" required>
-            <option value="">-- Select Guide --</option>
-            {% for g in guides %}
-                <option value="{{ g.id }}">
-                    {{ g.name }} - {{ g.place }}
-                </option>
-            {% endfor %}
-        </select>
+            <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, FIELD NAMES -->
+            <form method="post" action="/myapp/agent_assign_guide_post/" id="assignForm">
+                {% csrf_token %}
 
-        <button type="submit">Assign Guide</button>
-    </form>
+                <!-- Hidden Package ID Field - EXACT SAME -->
+                <input type="hidden" name="pid" value="{{ data.id }}">
+
+                <!-- Select Guide Field -->
+                <div class="assign-form-group">
+                    <label class="assign-form-label">
+                        <i class="fas fa-user"></i>
+                        Select Guide
+                    </label>
+
+                    {% if guides %}
+                        <!-- Dropdown Style (Original) -->
+                        <select name="guide_id" class="assign-form-select" required>
+                            <option value="" disabled selected>-- Select a Guide --</option>
+                            {% for g in guides %}
+                                <option value="{{ g.id }}">
+                                    {{ g.name }} — {{ g.place }} ({{ g.phone }})
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <!-- Optional: Radio List Style (Commented - Choose one) -->
+                        <!--
+                        <div class="assign-guide-list">
+                            {% for g in guides %}
+                            <label class="assign-guide-option">
+                                <input type="radio" name="guide_id" value="{{ g.id }}" required>
+                                <div class="assign-guide-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="assign-guide-info">
+                                    <span class="assign-guide-name">
+                                        <i class="fas fa-user"></i>
+                                        {{ g.name }}
+                                    </span>
+                                    <span class="assign-guide-place">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        {{ g.place }}
+                                        <span style="margin-left: 10px;">
+                                            <i class="fas fa-phone-alt"></i>
+                                            {{ g.phone }}
+                                        </span>
+                                    </span>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        -->
+
+                        <div class="assign-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Select a guide to assign to this package. Guides are shown with their location and contact.
+                        </div>
+                    {% else %}
+                        <!-- No Guides Available -->
+                        <div class="assign-no-guides">
+                            <i class="fas fa-user-slash"></i>
+                            <h4 style="color: #2c3e50; margin-bottom: 10px;">No Guides Available</h4>
+                            <p style="margin-bottom: 20px;">You need to add guides before assigning them to packages.</p>
+                            <a href="/myapp/agent_add_guide/" class="assign-btn-primary" style="width: auto; display: inline-flex; padding: 12px 25px;">
+                                <i class="fas fa-plus-circle"></i>
+                                Add New Guide
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Button Group -->
+                {% if guides %}
+                <div class="assign-button-group">
+                    <button type="submit" class="assign-btn-primary">
+                        <i class="fas fa-check-circle"></i>
+                        Assign Guide
+                    </button>
+
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Auto-hide alerts after 5 seconds -->
+<script>
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            }
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

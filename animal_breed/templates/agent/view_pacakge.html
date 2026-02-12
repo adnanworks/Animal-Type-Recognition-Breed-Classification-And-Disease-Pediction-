@@ -1,3 +1,60 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>View Packages</title>#}
+{#</head>#}
+{#<body>#}
+{#{% for i in messages %}#}
+{#    <div class="alert alert-info">{{ i }}</div>#}
+{#{% endfor %}#}
+{#<div class="container">#}
+{#    <h2 id="ab">Package List</h2>#}
+{#    <table>#}
+{#        <tr>#}
+{#            <th>Sl No</th>#}
+{#            <th>Title</th>#}
+{#            <th>Description</th>#}
+{#            <th>Days</th>#}
+{#            <th>Price</th>#}
+{#            <th>Place</th>#}
+{#            <th>Action</th>#}
+{#            <th>Assign Guide</th>#}
+{#        </tr>#}
+{##}
+{#        {% for p in data %}#}
+{#        <tr>#}
+{#            <td>{{ forloop.counter }}</td>#}
+{#            <td>{{ p.title }}</td>#}
+{#            <td>{{ p.description }}</td>#}
+{#            <td>{{ p.days }}</td>#}
+{#            <td>{{ p.price }}</td>#}
+{#            <td>{{ p.PLACE.place_name }}</td>#}
+{#            <td>#}
+{#                <a href="/myapp/agent_edit_package/{{ p.id }}#ab" class="btn btn-edit">Edit</a>#}
+{#                <a href="/myapp/agent_delete_package/{{ p.id }}"#}
+{#                   class="btn btn-delete"#}
+{#                   onclick="return confirm('Are you sure you want to delete this package?');">#}
+{#                   Delete#}
+{#                </a>#}
+{#            </td>#}
+{#            <td><a href="/myapp/assign_guide_to_package/{{ p.id }}#ab" class="btn btn-edit">Assign</a></td>#}
+{#        </tr>#}
+{#        {% empty %}#}
+{#        <tr>#}
+{#            <td colspan="7">No packages found</td>#}
+{#        </tr>#}
+{#        {% endfor %}#}
+{#    </table>#}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{#{% endblock %}#}
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 <!DOCTYPE html>
@@ -5,50 +62,541 @@
 <head>
     <meta charset="UTF-8">
     <title>View Packages</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY TABLE STYLES - NO HEADER/FOOTER STYLES */
+        .package-table-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 1300px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        .package-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+        }
+
+        .package-table-title {
+            color: #28a745;
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .package-table-title i {
+            font-size: 28px;
+        }
+
+        .package-stats-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .package-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        .package-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .package-table thead tr {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .package-table th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+            border-bottom: 3px solid #28a745;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .package-table td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .package-table tbody tr:hover td {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .package-title {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .package-title i {
+            color: #28a745;
+        }
+
+        .package-description {
+            max-width: 250px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #28a745;
+            font-size: 13px;
+        }
+
+        .package-days {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .package-days i {
+            color: #28a745;
+        }
+
+        .package-price {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .package-price i {
+            color: white;
+        }
+
+        .package-place {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .package-place i {
+            color: #28a745;
+        }
+
+        .package-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .package-btn-edit {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2);
+            text-decoration: none;
+        }
+
+        .package-btn-edit:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .package-btn-delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+            text-decoration: none;
+        }
+
+        .package-btn-delete:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .package-btn-assign {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(23, 162, 184, 0.2);
+            text-decoration: none;
+        }
+
+        .package-btn-assign:hover {
+            background: linear-gradient(135deg, #138496, #117a8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .package-empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+            background: #f8f9fa;
+        }
+
+        .package-empty-state i {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .package-empty-state p {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .package-add-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .package-add-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .package-table-container {
+                padding: 15px;
+                margin: 15px;
+            }
+
+            .package-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .package-table-title {
+                font-size: 22px;
+            }
+
+            .package-table th, .package-table td {
+                white-space: nowrap;
+            }
+
+            .package-actions {
+                flex-direction: column;
+            }
+
+            .package-description {
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-{% for i in messages %}
-    <div class="alert alert-info">{{ i }}</div>
-{% endfor %}
-<div class="container">
-    <h2 id="ab">Package List</h2>
-    <table>
-        <tr>
-            <th>Sl No</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Days</th>
-            <th>Price</th>
-            <th>Place</th>
-            <th>Action</th>
-            <th>Assign Guide</th>
-        </tr>
 
-        {% for p in data %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ p.title }}</td>
-            <td>{{ p.description }}</td>
-            <td>{{ p.days }}</td>
-            <td>{{ p.price }}</td>
-            <td>{{ p.PLACE.place_name }}</td>
-            <td>
-                <a href="/myapp/agent_edit_package/{{ p.id }}#ab" class="btn btn-edit">Edit</a>
-                <a href="/myapp/agent_delete_package/{{ p.id }}"
-                   class="btn btn-delete"
-                   onclick="return confirm('Are you sure you want to delete this package?');">
-                   Delete
-                </a>
-            </td>
-            <td><a href="/myapp/assign_guide_to_package/{{ p.id }}#ab" class="btn btn-edit">Assign</a></td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7">No packages found</td>
-        </tr>
+<div class="container">
+    <!-- Messages - Only styled -->
+    <div class="alert-messages">
+        {% for i in messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         {% endfor %}
-    </table>
+    </div>
+
+    <!-- Package Table Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="package-table-container">
+        <div class="package-table-header">
+            <h2 id="ab" class="package-table-title">
+                <i class="fas fa-box"></i>
+                Package List
+            </h2>
+            <div class="package-stats-badge">
+                <i class="fas fa-cubes"></i>
+                Total Packages: {{ data|length }}
+            </div>
+        </div>
+
+
+
+        <div class="package-table-wrapper">
+            <table class="package-table">
+                <thead>
+                    <tr>
+                        <th width="5%">
+                            <i class="fas fa-hashtag" style="color: #28a745;"></i>
+                            Sl No
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-tag" style="color: #28a745;"></i>
+                            Title
+                        </th>
+                        <th width="25%">
+                            <i class="fas fa-align-left" style="color: #28a745;"></i>
+                            Description
+                        </th>
+                        <th width="8%">
+                            <i class="fas fa-calendar" style="color: #28a745;"></i>
+                            Days
+                        </th>
+                        <th width="10%">
+                            <i class="fas fa-tag" style="color: #28a745;"></i>
+                            Price
+                        </th>
+                        <th width="15%">
+                            <i class="fas fa-map-marker-alt" style="color: #28a745;"></i>
+                            Place
+                        </th>
+                        <th width="12%">
+                            <i class="fas fa-cog" style="color: #28a745;"></i>
+                            Action
+                        </th>
+                        <th width="10%">
+                            <i class="fas fa-user-plus" style="color: #28a745;"></i>
+                            Assign Guide
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in data %}
+                    <tr>
+                        <td>
+                            <span class="fw-bold">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <span class="package-title">
+                                <i class="fas fa-box"></i>
+                                {{ p.title }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="package-description">
+                                <i class="fas fa-quote-left" style="color: #28a745; font-size: 10px; opacity: 0.7;"></i>
+                                {{ p.description|truncatechars:80 }}
+                                {% if p.description|length > 80 %}
+                                    <span style="color: #28a745; font-size: 12px; margin-left: 4px;" title="{{ p.description }}">...</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="package-days">
+                                <i class="fas fa-sun"></i>
+                                {{ p.days }} Day{{ p.days|pluralize }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="package-price">
+                                <i class="fas fa-rupee-sign"></i>
+                                {{ p.price }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="package-place">
+                                <i class="fas fa-map-pin"></i>
+                                {{ p.PLACE.place_name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="package-actions">
+                                <!-- EXACT SAME LINKS - NO CHANGES -->
+                                <a href="/myapp/agent_edit_package/{{ p.id }}#ab" class="package-btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+                                </a>
+                                <a href="/myapp/agent_delete_package/{{ p.id }}"
+                                   class="package-btn-delete"
+                                   onclick="return confirmDelete('{{ p.title }}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- EXACT SAME LINK - NO CHANGES -->
+                            <a href="/myapp/assign_guide_to_package/{{ p.id }}#ab" class="package-btn-assign">
+                                <i class="fas fa-user-plus"></i>
+                                Assign
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="package-empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>No packages found</p>
+                            <a href="/myapp/agent_add_package/" class="package-add-btn" style="display: inline-flex;">
+                                <i class="fas fa-plus-circle"></i>
+                                Add Your First Package
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer Stats -->
+        {% if data %}
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <i class="fas fa-info-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    <span style="color: #6c757d; font-size: 14px;">Showing {{ data|length }} package{{ data|length|pluralize }}</span>
+                </div>
+                <div>
+                    <span style="color: #6c757d; font-size: 14px;">
+                        <i class="fas fa-calendar-alt" style="color: #28a745; margin-right: 5px;"></i>
+                        Last updated: {% now "F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
+<!-- Delete Confirmation Script -->
+<script>
+    function confirmDelete(packageTitle) {
+        return confirm('⚠️ Are you sure you want to delete "' + packageTitle + '"?\nThis action cannot be undone.');
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

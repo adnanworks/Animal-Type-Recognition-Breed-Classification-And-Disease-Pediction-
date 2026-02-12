@@ -1,3 +1,70 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Agent Profile</title>#}
+{#</head>#}
+{##}
+{#<body>#}
+{#{% for i in messages %}#}
+{#    <div class="alert alert-info">{{ i }}</div>#}
+{#{% endfor %}#}
+{#<div class="container mt-5">#}
+{##}
+{#    <h2 class="text-center" id="ab">Profile</h2>#}
+{#    <hr>#}
+{##}
+{#    <div class="text-center mb-4">#}
+{#        {% if i.photo %}#}
+{#            <img src="{{ i.photo.url }}"#}
+{#                 alt="Profile Photo"#}
+{#                 style="width:120px;height:120px;border-radius:50%;object-fit:cover;">#}
+{#        {% else %}#}
+{#            <i class="fas fa-user" style="font-size:60px;"></i>#}
+{#        {% endif %}#}
+{#    </div>#}
+{##}
+{#    <table class="table table-bordered">#}
+{#        <tr>#}
+{#            <th>Full Name</th>#}
+{#            <td>{{ i.name }}</td>#}
+{#        </tr>#}
+{##}
+{#        <tr>#}
+{#            <th>Email Address</th>#}
+{#            <td>{{ i.email }}</td>#}
+{#        </tr>#}
+{##}
+{#        <tr>#}
+{#            <th>Place</th>#}
+{#            <td>{{ i.place }}</td>#}
+{#        </tr>#}
+{##}
+{#        <tr>#}
+{#            <th>Phone Number</th>#}
+{#            <td>{{ i.phone }}</td>#}
+{#        </tr>#}
+{#    </table>#}
+{#<div class="text-center mt-3">#}
+{#        <a href="/myapp/agent_edit_profile_get/{{ i.id }}"#}
+{#           class="btn btn-primary">#}
+{#            Edit Profile#}
+{#        </a>#}
+{#    </div>#}
+{##}
+{##}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{##}
+{#{% endblock %}#}
+
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 
@@ -6,57 +73,477 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent Profile</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY PROFILE STYLES - NO HEADER/FOOTER STYLES */
+        .profile-container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 800px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 35px;
+        }
+
+        .profile-header {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .profile-title i {
+            font-size: 30px;
+        }
+
+        .profile-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-photo-section {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .profile-photo-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #28a745;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .profile-photo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.35);
+        }
+
+        .profile-photo-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e8f5e9, #d4edda);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 60px;
+            border: 5px solid #28a745;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.25);
+            margin: 0 auto;
+        }
+
+        .profile-status-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 50px;
+            padding: 6px 15px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-details-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .profile-info-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .profile-info-table tr {
+            transition: all 0.3s ease;
+        }
+
+        .profile-info-table th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 12px 0 0 12px;
+            width: 35%;
+            border: 1px solid #e9ecef;
+            border-right: none;
+        }
+
+        .profile-info-table td {
+            color: #495057;
+            font-size: 15px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid #e9ecef;
+            border-left: none;
+            font-weight: 500;
+        }
+
+        .profile-info-table i {
+            color: #28a745;
+            width: 22px;
+            margin-right: 8px;
+        }
+
+        .profile-phone-valid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .profile-phone-invalid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8d7da;
+            color: #dc3545;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .profile-edit-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 35px;
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .profile-edit-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .profile-title {
+                font-size: 24px;
+            }
+
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-photo-placeholder {
+                width: 120px;
+                height: 120px;
+                font-size: 50px;
+            }
+
+            .profile-info-table th {
+                width: 40%;
+            }
+
+            .profile-info-table th,
+            .profile-info-table td {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-{% for i in messages %}
-    <div class="alert alert-info">{{ i }}</div>
-{% endfor %}
-<div class="container mt-5">
-
-    <h2 class="text-center" id="ab">Profile</h2>
-    <hr>
-
-    <div class="text-center mb-4">
-        {% if i.photo %}
-            <img src="{{ i.photo.url }}"
-                 alt="Profile Photo"
-                 style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-        {% else %}
-            <i class="fas fa-user" style="font-size:60px;"></i>
-        {% endif %}
+<div class="container">
+    <!-- Messages - Only styled -->
+    <div class="alert-messages">
+        {% for i in messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     </div>
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Full Name</th>
-            <td>{{ i.name }}</td>
-        </tr>
+    <!-- Profile Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2 id="ab" class="profile-title">
+                <i class="fas fa-user-circle"></i>
+                Agent Profile
+            </h2>
+            <div class="profile-badge">
+                <i class="fas fa-id-card"></i>
+                ID: AG-{{ i.id }}
+            </div>
+        </div>
 
-        <tr>
-            <th>Email Address</th>
-            <td>{{ i.email }}</td>
-        </tr>
+        <!-- Profile Photo Section -->
+        <div class="profile-photo-section">
+            <div class="profile-photo-wrapper">
+                {% if i.photo %}
+                    <img src="{{ i.photo.url }}"
+                         alt="{{ i.name }}'s Profile Photo"
+                         class="profile-photo"
+                         onclick="enlargeImage(this)">
+                    <span class="profile-status-badge">
+                        <i class="fas fa-check-circle"></i>
+                        Active
+                    </span>
+                {% else %}
+                    <div class="profile-photo-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="profile-status-badge">
+                        <i class="fas fa-check-circle"></i>
+                        Active
+                    </span>
+                {% endif %}
+            </div>
+        </div>
 
-        <tr>
-            <th>Place</th>
-            <td>{{ i.place }}</td>
-        </tr>
+        <!-- Profile Details Card -->
+        <div class="profile-details-card">
+            <table class="profile-info-table">
+                <tr>
+                    <th>
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </th>
+                    <td>
+                        <span style="font-weight: 600; color: #2c3e50;">{{ i.name }}</span>
+                    </td>
+                </tr>
 
-        <tr>
-            <th>Phone Number</th>
-            <td>{{ i.phone }}</td>
-        </tr>
-    </table>
-<div class="text-center mt-3">
-        <a href="/myapp/agent_edit_profile_get/{{ i.id }}"
-           class="btn btn-primary">
-            Edit Profile
-        </a>
+                <tr>
+                    <th>
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </th>
+                    <td>
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-envelope" style="color: #28a745;"></i>
+                            {{ i.email }}
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Place
+                    </th>
+                    <td>
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-map-pin" style="color: #28a745;"></i>
+                            {{ i.place }}
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        <i class="fas fa-phone-alt"></i>
+                        Phone Number
+                    </th>
+                    <td>
+                        {% with phone=i.phone|stringformat:"s" %}
+                            {% if phone|length == 10 and phone|first|stringformat:"s" in "6789" %}
+                                <span class="profile-phone-valid">
+                                    <i class="fas fa-check-circle"></i>
+                                    {{ i.phone }}
+                                    <span style="margin-left: 5px; font-size: 12px;">(Verified)</span>
+                                </span>
+                            {% else %}
+                                <span class="profile-phone-invalid">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ i.phone }}
+                                    <span style="margin-left: 5px; font-size: 12px;">(Invalid Format)</span>
+                                </span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Account Info Summary -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-calendar-alt" style="color: #28a745;"></i>
+                <span style="color: #2c3e50; font-size: 14px;">
+                    <strong>Member Since:</strong> {% now "F Y" %}
+                </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-shield-alt" style="color: #28a745;"></i>
+                <span style="color: #2c3e50; font-size: 14px;">
+                    <strong>Account Status:</strong>
+                    <span style="color: #28a745; font-weight: 600;">Active</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Edit Profile Button - EXACT SAME LINK -->
+        <div class="text-center">
+            <a href="/myapp/agent_edit_profile_get/{{ i.id }}#ab"
+               class="profile-edit-btn">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+            </a>
+        </div>
+
     </div>
-
-
 </div>
+
+<!-- Image Enlargement Script -->
+<script>
+    function enlargeImage(img) {
+        var modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '9999';
+        modal.style.cursor = 'pointer';
+
+        var enlargedImg = document.createElement('img');
+        enlargedImg.src = img.src;
+        enlargedImg.style.maxWidth = '90%';
+        enlargedImg.style.maxHeight = '90%';
+        enlargedImg.style.borderRadius = '20px';
+        enlargedImg.style.border = '5px solid #28a745';
+        enlargedImg.style.boxShadow = '0 10px 40px rgba(0,0,0,0.5)';
+
+        modal.appendChild(enlargedImg);
+        modal.onclick = function() {
+            document.body.removeChild(modal);
+        };
+
+        document.body.appendChild(modal);
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

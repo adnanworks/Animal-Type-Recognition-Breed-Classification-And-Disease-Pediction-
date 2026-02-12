@@ -1,3 +1,109 @@
+{#{% extends 'agent/home.html' %}#}
+{#{% block body %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Edit Profile</title>#}
+{#</head>#}
+{##}
+{#<body>#}
+{##}
+{#<div class="container mt-5">#}
+{##}
+{#    <h2 class="text-center" id="ab">Edit Profile</h2>#}
+{#    <hr>#}
+{##}
+{#    <form method="POST"#}
+{#          action="/myapp/agent_edit_profile_post/"#}
+{#          enctype="multipart/form-data">#}
+{##}
+{#        {% csrf_token %}#}
+{##}
+{#        <table class="table table-bordered">#}
+{##}
+{#            <tr>#}
+{#                <th>Full Name</th>#}
+{#                <td>#}
+{#                    <input type="text"#}
+{#                           name="name"#}
+{#                           value="{{ i.name }}"#}
+{#                           class="form-control"#}
+{#                           required>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            <tr>#}
+{#                <th>Email</th>#}
+{#                <td>#}
+{#                    <input type="email"#}
+{#                           name="email"#}
+{#                           value="{{ i.email }}"#}
+{#                           class="form-control"#}
+{#                           required>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            <tr>#}
+{#                <th>Place</th>#}
+{#                <td>#}
+{#                    <input type="text"#}
+{#                           name="place"#}
+{#                           value="{{ i.place }}"#}
+{#                           class="form-control"#}
+{#                           required>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            <tr>#}
+{#                <th>Phone</th>#}
+{#                <td>#}
+{#                    <input type="text"#}
+{#                           name="phone"#}
+{#                           value="{{ i.phone }}"#}
+{#                           class="form-control"#}
+{#                           pattern="^[6-9][0-9]{9}$"#}
+{#                           title="Phone must start with 6/7/8/9 and be exactly 10 digits"#}
+{#                           required>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            <tr>#}
+{#                <th>Photo</th>#}
+{#                <td>#}
+{#                    <input type="file"#}
+{#                           name="photo"#}
+{#                           class="form-control"#}
+{#                           accept="image/*">#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#            <tr>#}
+{#                <td></td>#}
+{#                <td>#}
+{#                    <input type="hidden" name="id" value="{{ i.id }}">#}
+{#                    <button type="submit" class="btn btn-primary">#}
+{#                        Update Profile#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{##}
+{#        </table>#}
+{#    </form>#}
+{##}
+{#</div>#}
+{##}
+{#</body>#}
+{#</html>#}
+{##}
+{#{% endblock %}#}
+
+
+
+
+
+
 {% extends 'agent/home.html' %}
 {% block body %}
 
@@ -6,93 +112,733 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ONLY FORM STYLES - NO HEADER/FOOTER STYLES */
+        .edit-profile-card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            border: none;
+            max-width: 800px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 35px;
+        }
+
+        .edit-profile-header {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-profile-title {
+            color: #28a745;
+            font-size: 28px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .edit-profile-title i {
+            font-size: 30px;
+        }
+
+        .edit-profile-badge {
+            background: #e8f5e9;
+            color: #28a745;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-profile-photo-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .edit-profile-current-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #28a745;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .edit-profile-photo-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e8f5e9, #d4edda);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 40px;
+            border: 4px solid #28a745;
+        }
+
+        .edit-profile-photo-info {
+            flex: 1;
+        }
+
+        .edit-profile-photo-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-profile-photo-title i {
+            color: #28a745;
+        }
+
+        .edit-profile-photo-hint {
+            font-size: 13px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-profile-form-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .edit-profile-form-table th {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border-radius: 12px 0 0 12px;
+            width: 30%;
+            border: 1px solid #e9ecef;
+            border-right: none;
+            vertical-align: middle;
+        }
+
+        .edit-profile-form-table td {
+            padding: 8px 20px;
+            background: white;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid #e9ecef;
+            border-left: none;
+            vertical-align: middle;
+        }
+
+        .edit-profile-form-table i {
+            color: #28a745;
+            width: 22px;
+            margin-right: 8px;
+        }
+
+        .edit-profile-form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            background: #fff;
+        }
+
+        .edit-profile-form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+            outline: none;
+        }
+
+        .edit-profile-form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: none;
+        }
+
+        .edit-profile-form-control.is-valid {
+            border-color: #28a745;
+            background-image: none;
+        }
+
+        .edit-profile-file-input {
+            border: 2px dashed #e9ecef;
+            border-radius: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-profile-file-input:hover {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+
+        .edit-profile-file-input::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-profile-file-input::-webkit-file-upload-button:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-1px);
+        }
+
+        .edit-profile-phone-validation {
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .edit-profile-phone-valid {
+            color: #28a745;
+            background: #e8f5e9;
+            border-left: 3px solid #28a745;
+        }
+
+        .edit-profile-phone-invalid {
+            color: #dc3545;
+            background: #f8d7da;
+            border-left: 3px solid #dc3545;
+        }
+
+        .edit-profile-form-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-profile-form-hint i {
+            color: #28a745;
+        }
+
+        .edit-profile-btn-primary {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 35px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+
+        .edit-profile-btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .edit-profile-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .edit-profile-btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 35px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .edit-profile-btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .alert-messages {
+            margin-bottom: 25px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 15px;
+            background: #e8f5e9;
+            color: #28a745;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #ab {
+            scroll-margin-top: 100px;
+        }
+
+        /* Remove spinner from number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @media (max-width: 768px) {
+            .edit-profile-card {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .edit-profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .edit-profile-title {
+                font-size: 24px;
+            }
+
+            .edit-profile-photo-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .edit-profile-form-table th {
+                width: 40%;
+            }
+
+            .edit-profile-form-table th,
+            .edit-profile-form-table td {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .edit-profile-btn-primary,
+            .edit-profile-btn-secondary {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container mt-5">
+<div class="container">
+    <!-- Messages - Only styled -->
+    <div class="alert-messages">
+        {% for i in messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ i }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
 
-    <h2 class="text-center" id="ab">Edit Profile</h2>
-    <hr>
+    <!-- Edit Profile Card - ONLY THIS IS REDESIGNED, HEADER/FOOTER UNTOUCHED -->
+    <div class="edit-profile-card" id="ab">
+        <div class="edit-profile-header">
+            <h2 id="ab" class="edit-profile-title">
+                <i class="fas fa-user-edit"></i>
+                Edit Profile
+            </h2>
+            <div class="edit-profile-badge">
+                <i class="fas fa-id-card"></i>
+                ID: AG-{{ i.id }}
+            </div>
+        </div>
 
-    <form method="POST"
-          action="/myapp/agent_edit_profile_post/"
-          enctype="multipart/form-data">
+        <!-- Current Photo Display -->
+        <div class="edit-profile-photo-section">
+            {% if i.photo %}
+                <img src="{{ i.photo.url }}"
+                     alt="Current Profile Photo"
+                     class="edit-profile-current-photo">
+            {% else %}
+                <div class="edit-profile-photo-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            <div class="edit-profile-photo-info">
+                <div class="edit-profile-photo-title">
+                    <i class="fas fa-camera"></i>
+                    Current Profile Photo
+                </div>
+                <div class="edit-profile-photo-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Leave empty to keep current photo. Upload new photo to change.
+                </div>
+            </div>
+        </div>
 
-        {% csrf_token %}
+        <!-- EXACT SAME FORM - NO CHANGES TO ACTION, METHOD, ENCTYPE, FIELD NAMES -->
+        <form method="POST"
+              action="/myapp/agent_edit_profile_post/"
+              enctype="multipart/form-data"
+              id="editProfileForm"
+              onsubmit="return validateForm()">
 
-        <table class="table table-bordered">
+            {% csrf_token %}
 
-            <tr>
-                <th>Full Name</th>
-                <td>
-                    <input type="text"
-                           name="name"
-                           value="{{ i.name }}"
-                           class="form-control"
-                           required>
-                </td>
-            </tr>
+            <table class="edit-profile-form-table">
+                <tr>
+                    <th>
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </th>
+                    <td>
+                        <input type="text"
+                               name="name"
+                               value="{{ i.name }}"
+                               class="edit-profile-form-control"
+                               id="profileName"
+                               placeholder="Enter your full name"
+                               onkeyup="validateName()"
+                               required>
+                        <div id="nameValidation" class="edit-profile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Minimum 3 characters
+                        </div>
+                    </td>
+                </tr>
 
-            <tr>
-                <th>Email</th>
-                <td>
-                    <input type="email"
-                           name="email"
-                           value="{{ i.email }}"
-                           class="form-control"
-                           required>
-                </td>
-            </tr>
+                <tr>
+                    <th>
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </th>
+                    <td>
+                        <input type="email"
+                               name="email"
+                               value="{{ i.email }}"
+                               class="edit-profile-form-control"
+                               id="profileEmail"
+                               placeholder="your.email@example.com"
+                               onkeyup="validateEmail()"
+                               required>
+                        <div id="emailValidation" class="edit-profile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Enter a valid email address
+                        </div>
+                    </td>
+                </tr>
 
-            <tr>
-                <th>Place</th>
-                <td>
-                    <input type="text"
-                           name="place"
-                           value="{{ i.place }}"
-                           class="form-control"
-                           required>
-                </td>
-            </tr>
+                <tr>
+                    <th>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Place
+                    </th>
+                    <td>
+                        <input type="text"
+                               name="place"
+                               value="{{ i.place }}"
+                               class="edit-profile-form-control"
+                               id="profilePlace"
+                               placeholder="Enter your city/location"
+                               onkeyup="validatePlace()"
+                               required>
+                        <div id="placeValidation" class="edit-profile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Enter your current location
+                        </div>
+                    </td>
+                </tr>
 
-            <tr>
-                <th>Phone</th>
-                <td>
-                    <input type="text"
-                           name="phone"
-                           value="{{ i.phone }}"
-                           class="form-control"
-                           pattern="^[6-9][0-9]{9}$"
-                           title="Phone must start with 6/7/8/9 and be exactly 10 digits"
-                           required>
-                </td>
-            </tr>
+                <tr>
+                    <th>
+                        <i class="fas fa-phone-alt"></i>
+                        Phone
+                    </th>
+                    <td>
+                        <input type="tel"
+                               name="phone"
+                               value="{{ i.phone }}"
+                               class="edit-profile-form-control"
+                               id="profilePhone"
+                               placeholder="Enter 10 digit mobile number"
+                               onkeyup="validatePhone()"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+                               pattern="^[6-9][0-9]{9}$"
+                               title="Phone must start with 6/7/8/9 and be exactly 10 digits"
+                               required>
+                        <div id="phoneValidation" class="edit-profile-phone-validation"></div>
+                        <div class="edit-profile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Must start with 6, 7, 8, or 9 and be exactly 10 digits
+                        </div>
+                    </td>
+                </tr>
 
-            <tr>
-                <th>Photo</th>
-                <td>
-                    <input type="file"
-                           name="photo"
-                           class="form-control"
-                           accept="image/*">
-                </td>
-            </tr>
+                <tr>
+                    <th>
+                        <i class="fas fa-camera"></i>
+                        Photo
+                    </th>
+                    <td>
+                        <input type="file"
+                               name="photo"
+                               class="edit-profile-file-input"
+                               accept="image/*">
+                        <div class="edit-profile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Accepted formats: JPG, PNG, GIF (Max 5MB)
+                        </div>
+                    </td>
+                </tr>
 
-            <tr>
-                <td></td>
-                <td>
-                    <input type="hidden" name="id" value="{{ i.id }}">
-                    <button type="submit" class="btn btn-primary">
-                        Update Profile
-                    </button>
-                </td>
-            </tr>
+                <tr>
+                    <td></td>
+                    <td style="display: flex; gap: 15px; border: none; background: transparent;">
+                        <input type="hidden" name="id" value="{{ i.id }}">
+                        <button type="submit" class="edit-profile-btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            Update Profile
+                        </button>
 
-        </table>
-    </form>
-
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
+
+<!-- Validation Script -->
+<script>
+    // Name validation
+    function validateName() {
+        let name = document.getElementById('profileName').value;
+        let nameHint = document.getElementById('nameValidation');
+        let nameInput = document.getElementById('profileName');
+
+        if (name.length > 0) {
+            if (name.length >= 3) {
+                nameHint.innerHTML = '<i class="fas fa-check-circle" style="color: #28a745;"></i> ✓ Valid name';
+                nameHint.style.color = '#28a745';
+                nameInput.classList.add('is-valid');
+                nameInput.classList.remove('is-invalid');
+            } else {
+                nameHint.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #dc3545;"></i> ❌ Name must be at least 3 characters';
+                nameHint.style.color = '#dc3545';
+                nameInput.classList.add('is-invalid');
+                nameInput.classList.remove('is-valid');
+            }
+        } else {
+            nameHint.innerHTML = '<i class="fas fa-info-circle" style="color: #28a745;"></i> Minimum 3 characters';
+            nameHint.style.color = '#6c757d';
+            nameInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Email validation
+    function validateEmail() {
+        let email = document.getElementById('profileEmail').value;
+        let emailHint = document.getElementById('emailValidation');
+        let emailInput = document.getElementById('profileEmail');
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (email.length > 0) {
+            if (emailPattern.test(email)) {
+                emailHint.innerHTML = '<i class="fas fa-check-circle" style="color: #28a745;"></i> ✓ Valid email';
+                emailHint.style.color = '#28a745';
+                emailInput.classList.add('is-valid');
+                emailInput.classList.remove('is-invalid');
+            } else {
+                emailHint.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #dc3545;"></i> ❌ Please enter a valid email address';
+                emailHint.style.color = '#dc3545';
+                emailInput.classList.add('is-invalid');
+                emailInput.classList.remove('is-valid');
+            }
+        } else {
+            emailHint.innerHTML = '<i class="fas fa-info-circle" style="color: #28a745;"></i> Enter a valid email address';
+            emailHint.style.color = '#6c757d';
+            emailInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Place validation
+    function validatePlace() {
+        let place = document.getElementById('profilePlace').value;
+        let placeHint = document.getElementById('placeValidation');
+        let placeInput = document.getElementById('profilePlace');
+
+        if (place.length > 0) {
+            if (place.length >= 2) {
+                placeHint.innerHTML = '<i class="fas fa-check-circle" style="color: #28a745;"></i> ✓ Valid location';
+                placeHint.style.color = '#28a745';
+                placeInput.classList.add('is-valid');
+                placeInput.classList.remove('is-invalid');
+            } else {
+                placeHint.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #dc3545;"></i> ❌ Place must be at least 2 characters';
+                placeHint.style.color = '#dc3545';
+                placeInput.classList.add('is-invalid');
+                placeInput.classList.remove('is-valid');
+            }
+        } else {
+            placeHint.innerHTML = '<i class="fas fa-info-circle" style="color: #28a745;"></i> Enter your current location';
+            placeHint.style.color = '#6c757d';
+            placeInput.classList.remove('is-valid', 'is-invalid');
+        }
+        validateForm();
+    }
+
+    // Phone validation - EXACT REQUIREMENTS: 6,7,8,9 start and 10 digits
+    function validatePhone() {
+        let phone = document.getElementById('profilePhone').value;
+        let phoneValidation = document.getElementById('phoneValidation');
+        let phoneInput = document.getElementById('profilePhone');
+        let submitBtn = document.getElementById('submitBtn');
+
+        // Phone pattern: starts with 6-9 and exactly 10 digits
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        if (phone.length > 0) {
+            if (phonePattern.test(phone)) {
+                // Valid phone
+                phoneValidation.innerHTML = '<i class="fas fa-check-circle"></i> ✓ Valid phone number';
+                phoneValidation.className = 'edit-profile-phone-validation edit-profile-phone-valid';
+                phoneInput.classList.add('is-valid');
+                phoneInput.classList.remove('is-invalid');
+            } else {
+                // Invalid phone - provide specific error message
+                phoneInput.classList.add('is-invalid');
+                phoneInput.classList.remove('is-valid');
+
+                if (phone.length !== 10) {
+                    phoneValidation.innerHTML = '<i class="fas fa-exclamation-circle"></i> ❌ Phone must be exactly 10 digits';
+                } else if (phone.length === 10 && !/^[6-9]/.test(phone)) {
+                    phoneValidation.innerHTML = '<i class="fas fa-exclamation-circle"></i> ❌ Phone must start with 6, 7, 8, or 9';
+                } else {
+                    phoneValidation.innerHTML = '<i class="fas fa-exclamation-circle"></i> ❌ Invalid phone number';
+                }
+                phoneValidation.className = 'edit-profile-phone-validation edit-profile-phone-invalid';
+            }
+        } else {
+            phoneValidation.innerHTML = '<i class="fas fa-exclamation-circle"></i> ❌ Phone number is required';
+            phoneValidation.className = 'edit-profile-phone-validation edit-profile-phone-invalid';
+            phoneInput.classList.add('is-invalid');
+            phoneInput.classList.remove('is-valid');
+        }
+        validateForm();
+    }
+
+    // Form validation before submit
+    function validateForm() {
+        let name = document.getElementById('profileName').value;
+        let email = document.getElementById('profileEmail').value;
+        let place = document.getElementById('profilePlace').value;
+        let phone = document.getElementById('profilePhone').value;
+        let submitBtn = document.getElementById('submitBtn');
+
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let phonePattern = /^[6-9][0-9]{9}$/;
+
+        let nameValid = name.length >= 3;
+        let emailValid = emailPattern.test(email);
+        let placeValid = place.length >= 2;
+        let phoneValid = phonePattern.test(phone);
+
+        let allValid = nameValid && emailValid && placeValid && phoneValid;
+
+        if (submitBtn) {
+            submitBtn.disabled = !allValid;
+        }
+
+        return allValid;
+    }
+
+    // Initial validation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        validateName();
+        validateEmail();
+        validatePlace();
+        validatePhone();
+    });
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
 
 </body>
 </html>

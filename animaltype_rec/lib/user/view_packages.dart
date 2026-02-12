@@ -1,37 +1,37 @@
 import 'dart:convert';
-import 'package:animaltype_rec/user/rating_places.dart';
-import 'package:animaltype_rec/user/view_packages.dart';
+import 'package:animaltype_rec/user/view_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import 'book_package.dart';
 import 'home.dart';
 
 void main() {
-  runApp(const ViewPlaces());
+  runApp(const ViewPackages());
 }
 
-class ViewPlaces extends StatelessWidget {
-  const ViewPlaces({Key? key}) : super(key: key);
+class ViewPackages extends StatelessWidget {
+  const ViewPackages({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ViewPlacesPage(title: 'View Experts'),
+      home: ViewPackagesPage(title: 'View Experts'),
     );
   }
 }
 
-class ViewPlacesPage extends StatefulWidget {
-  const ViewPlacesPage({super.key, required this.title});
+class ViewPackagesPage extends StatefulWidget {
+  const ViewPackagesPage({super.key, required this.title});
   final String title;
 
   @override
-  State<ViewPlacesPage> createState() => ViewPlacesPageState();
+  State<ViewPackagesPage> createState() => ViewPackagesPageState();
 }
 
-class ViewPlacesPageState extends State<ViewPlacesPage> {
+class ViewPackagesPageState extends State<ViewPackagesPage> {
   List<Map<String, dynamic>> users = [];
 
   @override
@@ -44,9 +44,10 @@ class ViewPlacesPageState extends State<ViewPlacesPage> {
     try {
       SharedPreferences sh = await SharedPreferences.getInstance();
       String urls = sh.getString('url') ?? '';
+      String place_id = sh.getString('place_id') ?? '';
 
-      String apiUrl = '$urls/user_viewplaces/';
-      var response = await http.post(Uri.parse(apiUrl), body: {});
+      String apiUrl = '$urls/user_viewpackages/';
+      var response = await http.post(Uri.parse(apiUrl), body: { 'place_id':place_id,});
       var jsonData = json.decode(response.body);
 
       if (jsonData['status'] == 'ok') {
@@ -54,13 +55,15 @@ class ViewPlacesPageState extends State<ViewPlacesPage> {
         for (var item in jsonData['data']) {
           tempList.add({
             'id': item['id'].toString(),
-            'placename': item['placename'].toString(),
+            'title': item['title'].toString(),
             'description': item['description'].toString(),
-            'location': item['location'].toString(),
-            'type': item['type'].toString(),
-            'longitude': item['longitude'].toString(),
-            'latitute': item['latitute'].toString(),
+            'price': item['price'].toString(),
+            'days': item['days'].toString(),
+            'agent': item['agent'].toString(),
+            'guide_id': item['guide_id']?.toString(),
+            'guide_name': item['guide_name'].toString(),
           });
+
         }
         setState(() {
           users = tempList;
@@ -99,50 +102,54 @@ class ViewPlacesPageState extends State<ViewPlacesPage> {
               elevation: 5,
               child: ListTile(
                 title: Text(
-                  user['placename'],
+                  user['title'],
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("location: ${user['location']}"),
+                    Text("price: ${user['price']}"),
                     Text("description: ${user['description']}"),
-                    Text("latitute: ${user['latitute']}"),
+                    Text("days: ${user['days']}"),
 
-                    Text("longitude: ${user['longitude']}"),
-                    Text("Type: ${user['type']}"),
+                    Text("agent: ${user['agent']}"),
+                    if (user['guide_id'] != null && user['guide_id'] != 'null')
+                      ElevatedButton(
+                        onPressed: () async {
+                          SharedPreferences sh = await SharedPreferences.getInstance();
+                          sh.setString('guide_id', user['guide_id']);
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ViewGuidePage(title: 'Guide Details'),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Colors.green,
+                        ),
+                        child: const Text('View Guide'),
+                      ),
+
                     ElevatedButton(
                       onPressed: () async {
                         SharedPreferences sh = await SharedPreferences.getInstance();
-                        sh.setString('place_id',user['id']);
+                        sh.setString('package_id',user['id']);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ViewPackagesPage(title: '',)),
+                          MaterialPageRoute(builder: (context) => BookPackagePage(title: '',)),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50),
                       ),
-                      child: const Text('View Packages'),
+                      child: const Text('Book'),
                     ),
-                    SizedBox(height: 10,),
-                    ElevatedButton(
-                      onPressed: () async {
-                        SharedPreferences sh = await SharedPreferences.getInstance();
-                        sh.setString('place_id',user['id']);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RatingPlacePage(title: '')),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      child: const Text('Add Rating'),
-                    ),
-                    SizedBox(height: 10,),
 
                     SizedBox(height: 10,),
+
 
                   ],
                 ),

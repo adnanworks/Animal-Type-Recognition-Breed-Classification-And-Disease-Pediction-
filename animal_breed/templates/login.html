@@ -100,7 +100,7 @@
     >
       <a href="index.html" class="navbar-brand p-0">
         <img class="img-fluid me-3" src="/media/img/icon/icon-10.png" alt="Icon" />
-        <h1 class="m-0 text-primary">Zoofari</h1>
+        <h1 class="m-0 text-primary">Animal Recognition</h1>
       </a>
       <button
         type="button"
@@ -112,28 +112,28 @@
       </button>
       <div class="collapse navbar-collapse py-4 py-lg-0" id="navbarCollapse">
         <div class="navbar-nav ms-auto">
-          <a href="index.html" class="nav-item nav-link active">Home</a>
-          <a href="about.html" class="nav-item nav-link">About</a>
-          <a href="service.html" class="nav-item nav-link">Services</a>
-          <div class="nav-item dropdown">
-            <a
-              href="#"
-              class="nav-link dropdown-toggle"
-              data-bs-toggle="dropdown"
-              >Pages</a
-            >
-            <div class="dropdown-menu rounded-0 rounded-bottom m-0">
-              <a href="animal.html" class="dropdown-item">Our Animals</a>
-              <a href="membership.html" class="dropdown-item">Membership</a>
-              <a href="visiting.html" class="dropdown-item">Visiting Hours</a>
-              <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-              <a href="404.html" class="dropdown-item">404 Page</a>
-            </div>
-          </div>
-          <a href="contact.html" class="nav-item nav-link">Contact</a>
-        </div>
-        <a href="/myapp/login_get/" class="btn btn-primary"
-          >Login<i class="fa fa-arrow-right ms-3"></i
+{#          <a href="index.html" class="nav-item nav-link active">Home</a>#}
+{#          <a href="about.html" class="nav-item nav-link">About</a>#}
+{#          <a href="service.html" class="nav-item nav-link">Services</a>#}
+{#          <div class="nav-item dropdown">#}
+{#            <a#}
+{#              href="#"#}
+{#              class="nav-link dropdown-toggle"#}
+{#              data-bs-toggle="dropdown"#}
+{#              >Pages</a#}
+{#            >#}
+{#            <div class="dropdown-menu rounded-0 rounded-bottom m-0">#}
+{#              <a href="animal.html" class="dropdown-item">Our Animals</a>#}
+{#              <a href="membership.html" class="dropdown-item">Membership</a>#}
+{#              <a href="visiting.html" class="dropdown-item">Visiting Hours</a>#}
+{#              <a href="testimonial.html" class="dropdown-item">Testimonial</a>#}
+{#              <a href="404.html" class="dropdown-item">404 Page</a>#}
+{#            </div>#}
+{#          </div>#}
+{#          <a href="contact.html" class="nav-item nav-link">Contact</a>#}
+{#        </div>#}
+        <a href="/myapp/" class="btn btn-primary"
+          >Back<i class="fa fa-arrow-right ms-3"></i
         ></a>
       </div>
     </nav>
@@ -142,29 +142,62 @@
 
 
 
-    <h2>Animal Type Recognition</h2>
 
     <!-- Messages -->
+   <!-- Messages -->
+<div class="container mt-4">
     {% for message in messages %}
-        <p>{{ message }}</p>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     {% endfor %}
+</div>
 
-    <h3>Login</h3>
-    <form action="/myapp/login_post/" method="POST">
-        {% csrf_token %}
+<!-- Login Form Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 wow fadeIn" data-wow-delay="0.1s">
+                <div class="bg-light rounded p-5">
+                    <div class="text-center">
+                        <img class="img-fluid mb-4" src="/media/img/icon/icon-10.png" alt="Icon" style="width: 80px;">
+                        <h3 class="display-6 mb-4 text-primary">Welcome Back!</h3>
+                    </div>
 
-        <label for="username">Username</label><br>
-        <input type="text" id="username" name="username" required><br><br>
+                    <form action="/myapp/login_post/" method="POST">
+                        {% csrf_token %}
 
-        <label for="password">Password</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                            <label for="username">Username</label>
+                        </div>
 
-        <button type="submit">Login</button>
-    </form>
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <label for="password">Password</label>
+                        </div>
 
-    <br>
-    <a href="/myapp/agent_register_get/">Agent Register</a>
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-primary py-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </div>
 
+                        <div class="text-center">
+                            <p class="mb-0">Don't have an account?
+                                <a href="/myapp/agent_register_get/" class="text-primary fw-bold">
+                                    Register as Agent <i class="fa fa-arrow-right ms-1"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login Form End -->
 
 
 
