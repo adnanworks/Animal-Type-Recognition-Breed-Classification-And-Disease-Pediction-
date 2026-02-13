@@ -121,7 +121,6 @@ class _SpeciesPredictionPageState extends State<SpeciesPredictionPage> {
           children: [
             const SizedBox(height: 20),
 
-            // Image Preview
             _imageFile != null
                 ? Image.file(
               _imageFile!,
@@ -134,7 +133,6 @@ class _SpeciesPredictionPageState extends State<SpeciesPredictionPage> {
             ),
             const SizedBox(height: 20),
 
-            // Pick / Camera Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -158,7 +156,6 @@ class _SpeciesPredictionPageState extends State<SpeciesPredictionPage> {
             ),
             const SizedBox(height: 20),
 
-            // Upload Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -172,7 +169,6 @@ class _SpeciesPredictionPageState extends State<SpeciesPredictionPage> {
             ),
             const SizedBox(height: 30),
 
-            // Prediction Result
             _predictionResult.isNotEmpty
                 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,

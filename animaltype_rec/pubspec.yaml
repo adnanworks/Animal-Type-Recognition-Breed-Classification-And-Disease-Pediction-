@@ -43,6 +43,11 @@ dev_dependencies:
   http:
   fluttertoast:
   image_picker:
+  url_launcher:
+  flutter_launcher_icons:
+flutter_icons:
+  android: true
+  image_path: "assets/wild_icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
