@@ -1032,9 +1032,10 @@ import os
 # -----------------------------
 # Load trained model
 # -----------------------------
-MODEL_PATH = r"C:\Users\USER\Pictures\animal_species_dataset\spec_classifiernew2.h5"
-model = load_model(MODEL_PATH)
-
+# MODEL_PATH = r"C:\Users\USER\Pictures\animal_species_dataset\spec_classifiernew2.h5"
+# model = load_model(MODEL_PATH)
+SPECIES_MODEL_PATH = r"C:\Users\USER\Pictures\animal_species_dataset\spec_classifiernew2.h5"
+species_model = load_model(SPECIES_MODEL_PATH)
 # -----------------------------
 # Detect classes automatically
 # -----------------------------
@@ -1059,7 +1060,7 @@ def species_prediction(request):
         img_array = img_to_array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
-        pred = model.predict(img_array)
+        pred = species_model.predict(img_array)
         top3_idx = pred[0].argsort()[-3:][::-1]
         top3_full = [(class_labels[i], float(pred[0][i]) * 100) for i in top3_idx]
 
@@ -1077,3 +1078,70 @@ def species_prediction(request):
         'prediction': prediction,
         'top3': top3
     })
+
+
+
+# =========================DOG DISEASE-===============================
+# ====================================================================
+
+
+
+
+
+
+
+
+import os
+import numpy as np
+import tensorflow as tf
+from django.http import JsonResponse
+from PIL import Image
+import base64
+
+# -----------------------------
+# Load model
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "dog_disease_mobilenet.h5")
+model = tf.keras.models.load_model(MODEL_PATH)
+
+# -----------------------------
+# Load class names automatically
+# -----------------------------
+TRAIN_FOLDER = r"C:\Users\USER\Pictures\archive dog\train"
+class_names = sorted(os.listdir(TRAIN_FOLDER))
+
+print("Loaded Classes:", class_names)
+
+# -----------------------------
+# Prediction View (FOR FLUTTER)
+# -----------------------------
+def predict_dog_disease(request):
+
+    if request.method == "POST" and request.FILES.get("image"):
+
+        image_file = request.FILES["image"]
+
+        # Read and process image
+        img = Image.open(image_file)
+        img = img.resize((224, 224))
+        img = img.convert("RGB")
+
+        img_array = np.array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+
+        # Predict
+        prediction = model.predict(img_array)
+
+        predicted_index = np.argmax(prediction)
+        result = class_names[predicted_index]
+        confidence = round(float(np.max(prediction)) * 100, 2)
+
+        return JsonResponse({
+            "result": result,
+            "confidence": confidence
+        })
+
+    return JsonResponse({
+        "error": "No image provided"
+    }, status=400)

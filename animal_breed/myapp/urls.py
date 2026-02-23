@@ -112,5 +112,7 @@ urlpatterns = [
 
     path('species_prediction/',views.species_prediction),
 
+    path('predict_dog_disease/',views.predict_dog_disease),
+
 
 ]
