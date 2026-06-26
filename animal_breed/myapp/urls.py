@@ -110,9 +110,9 @@ urlpatterns = [
     path('user_addFeedback/',views.user_addFeedback),
     path('user_changepassword/',views.user_changepassword),
 
-    path('species_prediction/',views.species_prediction),
+    # path('species_prediction/',views.species_prediction),
 
-    path('predict_dog_disease/',views.predict_dog_disease),
+    # path('predict_dog_disease/',views.predict_dog_disease),
 
 
 ]

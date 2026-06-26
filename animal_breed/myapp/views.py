@@ -12,7 +12,6 @@ from django.shortcuts import render, redirect
 
 
 # Create your views here.
-from animal_breed import settings
 from myapp.models import *
 
 
@@ -1021,142 +1020,126 @@ def user_changepassword(request):
 # ==========================species prediction===================================
 
 
-
-from django.http import JsonResponse
-from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import load_img, img_to_array
-import numpy as np
-from PIL import Image
-import io
-import os
-
-# -----------------------------
-# Load trained model
-# -----------------------------
-
+#
+# from django.http import JsonResponse
+# from tensorflow.keras.models import load_model
+# from tensorflow.keras.utils import load_img, img_to_array
+# import numpy as np
+# from PIL import Image
+# import io
+# import os
+#
+# # -----------------------------
+# # Load trained model
+# # -----------------------------
+#
 # SPECIES_MODEL_PATH = r"C:\Users\USER\Desktop\datas\projects\animal_breed\animal_breed\animal_breed\models\spec_classifiernew2.h5"
 # species_model = load_model(SPECIES_MODEL_PATH)
-
-
-
-
-
-SPECIES_MODEL_PATH = os.path.join(
-    settings.BASE_DIR,
-    "animal_breed",
-    "models",
-    "spec_classifiernew2.h5"
-)
-
-species_model = load_model(SPECIES_MODEL_PATH)
-
-
-
-# -----------------------------
-# Detect classes automatically
-# -----------------------------
-dataset_dir = r"C:\Users\USER\Pictures\animal_species_dataset"
-classes = sorted([d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir,d))])
-class_labels = {i: c for i, c in enumerate(classes)}
-
-# -----------------------------
-# Prediction for Flutter (return JSON)
-# -----------------------------
-def species_prediction(request):
-    prediction = None
-    top3 = None
-
-    if request.method == 'POST' and request.FILES.get('file'):
-        uploaded_file = request.FILES['file']
-
-        img_bytes = uploaded_file.read()
-        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-        img = img.resize((224, 224))
-
-        img_array = img_to_array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
-
-        pred = species_model.predict(img_array)
-        top3_idx = pred[0].argsort()[-3:][::-1]
-        top3_full = [(class_labels[i], float(pred[0][i]) * 100) for i in top3_idx]
-
-        # Confidence filter ≥ 30%
-        top3 = [(label, conf) for label, conf in top3_full if conf >= 30]
-
-        if top3:
-            prediction = f"{top3[0][0]} ({top3[0][1]:.2f}%)"
-        else:
-            prediction = "No prediction with confidence ≥ 30%"
-
-    # Return JSON for Flutter
-    return JsonResponse({
-        'status': 'ok',
-        'prediction': prediction,
-        'top3': top3
-    })
-
-
-
-
-
-
-# =========================DOG DISEASE-===============================
-# ====================================================================
-
-
-
-
-import os
-import numpy as np
-import tensorflow as tf
-from django.http import JsonResponse
-from PIL import Image
-import base64
-
-# -----------------------------
-# Load model
-# -----------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "dog_disease_mobilenet.h5")
-model = tf.keras.models.load_model(MODEL_PATH)
-
-# -----------------------------
-# Load class names automatically
-# -----------------------------
-TRAIN_FOLDER = r"C:\Users\USER\Pictures\archive dog\train"
-class_names = sorted(os.listdir(TRAIN_FOLDER))
-
-print("Loaded Classes:", class_names)
-
-# -----------------------------
-# Prediction View (FOR FLUTTER)
-# -----------------------------
-def predict_dog_disease(request):
-
-    if request.method == "POST" and request.FILES.get("image"):
-
-        image_file = request.FILES["image"]
-
-        # Read and process image
-        img = Image.open(image_file)
-        img = img.resize((224, 224))
-        img = img.convert("RGB")
-
-        img_array = np.array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-
-        # Predict
-        prediction = model.predict(img_array)
-
-        predicted_index = np.argmax(prediction)
-        result = class_names[predicted_index]
-        confidence = round(float(np.max(prediction)) * 100, 2)
-
-        return JsonResponse({
-            "result": result,
-            "confidence": confidence
-        })
-
-    return JsonResponse({
-        "error": "No image provided"
-    }, status=400)
+# # -----------------------------
+# # Detect classes automatically
+# # -----------------------------
+# dataset_dir = r"C:\Users\USER\Pictures\animal_species_dataset"
+# classes = sorted([d for d in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir,d))])
+# class_labels = {i: c for i, c in enumerate(classes)}
+#
+# # -----------------------------
+# # Prediction for Flutter (return JSON)
+# # -----------------------------
+# def species_prediction(request):
+#     prediction = None
+#     top3 = None
+#
+#     if request.method == 'POST' and request.FILES.get('file'):
+#         uploaded_file = request.FILES['file']
+#
+#         img_bytes = uploaded_file.read()
+#         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+#         img = img.resize((224, 224))
+#
+#         img_array = img_to_array(img) / 255.0
+#         img_array = np.expand_dims(img_array, axis=0)
+#
+#         pred = species_model.predict(img_array)
+#         top3_idx = pred[0].argsort()[-3:][::-1]
+#         top3_full = [(class_labels[i], float(pred[0][i]) * 100) for i in top3_idx]
+#
+#         # Confidence filter ≥ 30%
+#         top3 = [(label, conf) for label, conf in top3_full if conf >= 30]
+#
+#         if top3:
+#             prediction = f"{top3[0][0]} ({top3[0][1]:.2f}%)"
+#         else:
+#             prediction = "No prediction with confidence ≥ 30%"
+#
+#     # Return JSON for Flutter
+#     return JsonResponse({
+#         'status': 'ok',
+#         'prediction': prediction,
+#         'top3': top3
+#     })
+#
+#
+#
+#
+#
+#
+# # =========================DOG DISEASE-===============================
+# # ====================================================================
+#
+#
+#
+#
+# import os
+# import numpy as np
+# import tensorflow as tf
+# from django.http import JsonResponse
+# from PIL import Image
+# import base64
+#
+# # -----------------------------
+# # Load model
+# # -----------------------------
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# MODEL_PATH = os.path.join(BASE_DIR, "dog_disease_mobilenet.h5")
+# model = tf.keras.models.load_model(MODEL_PATH)
+#
+# # -----------------------------
+# # Load class names automatically
+# # -----------------------------
+# TRAIN_FOLDER = r"C:\Users\USER\Pictures\archive dog\train"
+# class_names = sorted(os.listdir(TRAIN_FOLDER))
+#
+# print("Loaded Classes:", class_names)
+#
+# # -----------------------------
+# # Prediction View (FOR FLUTTER)
+# # -----------------------------
+# def predict_dog_disease(request):
+#
+#     if request.method == "POST" and request.FILES.get("image"):
+#
+#         image_file = request.FILES["image"]
+#
+#         # Read and process image
+#         img = Image.open(image_file)
+#         img = img.resize((224, 224))
+#         img = img.convert("RGB")
+#
+#         img_array = np.array(img)
+#         img_array = np.expand_dims(img_array, axis=0)
+#
+#         # Predict
+#         prediction = model.predict(img_array)
+#
+#         predicted_index = np.argmax(prediction)
+#         result = class_names[predicted_index]
+#         confidence = round(float(np.max(prediction)) * 100, 2)
+#
+#         return JsonResponse({
+#             "result": result,
+#             "confidence": confidence
+#         })
+#
+#     return JsonResponse({
+#         "error": "No image provided"
+#     }, status=400)
