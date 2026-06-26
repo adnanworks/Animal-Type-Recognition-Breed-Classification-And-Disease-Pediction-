@@ -1034,7 +1034,7 @@ import os
 # -----------------------------
 # MODEL_PATH = r"C:\Users\USER\Pictures\animal_species_dataset\spec_classifiernew2.h5"
 # model = load_model(MODEL_PATH)
-SPECIES_MODEL_PATH = r"C:\Users\USER\Pictures\animal_species_dataset\spec_classifiernew2.h5"
+SPECIES_MODEL_PATH = r"C:\Users\USER\Desktop\datas\projects\animal_breed\animal_breed\animal_breed\models\spec_classifiernew2.h5"
 species_model = load_model(SPECIES_MODEL_PATH)
 # -----------------------------
 # Detect classes automatically
